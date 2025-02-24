@@ -31,7 +31,7 @@ export const isValidGenre = (genres) => {
   }
 
   if (uniqueGenres.size > 10) {
-    return { success: false, message: "Can only have 5 genres" };
+    return { success: false, message: "Can only have 10 genres" };
   }
 
   return { success: true };

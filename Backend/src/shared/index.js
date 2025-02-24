@@ -10,6 +10,7 @@ import { isBodyEmpty } from "./isBodyEmpty.js";
 import { isValidCoverImage } from "./coverImage.js";
 import { isValidateId } from "./validId.js";
 import { isValidPageLimit } from "./pages.js";
+import { isValidComment } from "./comments.js";
 
 export {
   isValidDescription,
@@ -24,4 +25,5 @@ export {
   isValidCoverImage,
   isValidateId,
   isValidPageLimit,
+  isValidComment,
 };

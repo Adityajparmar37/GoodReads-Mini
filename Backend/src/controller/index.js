@@ -6,6 +6,7 @@ import {
   getBooks,
   getBook,
 } from "./books.js";
+import { addReview, removeReview, updateReview, getReviews } from "./review.js";
 
 export {
   registerUser,
@@ -16,4 +17,8 @@ export {
   updateBook,
   getBooks,
   getBook,
+  addReview,
+  getReviews,
+  removeReview,
+  updateReview,
 };

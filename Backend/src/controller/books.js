@@ -6,10 +6,13 @@ import {
   findBooks,
   findOneBook,
 } from "../query/books.js";
+import { deleteReviews } from "../query/review.js";
 import { createId } from "../utils/createId.js";
 import { sortMapping } from "../utils/mapping.js";
 import { sendResponse } from "../utils/sendResponse.js";
 
+// @route   POST /api/v1/books/
+// @desc    add book
 export const createBook = handleAsync(async (ctx) => {
   const bookData = ctx.state.book;
   const publishedBy = ctx.state.user;
@@ -41,6 +44,8 @@ export const createBook = handleAsync(async (ctx) => {
   return;
 });
 
+// @route   GET/api/v1/books/
+// @desc    get books
 export const getBooks = handleAsync(async (ctx) => {
   const { sort, page, limit, searchTerm } = ctx.state.shared || {};
   const sortOrder = sort ? sortMapping.get(sort) : 1;
@@ -55,12 +60,14 @@ export const getBooks = handleAsync(async (ctx) => {
       })
     : sendResponse(ctx, 400, {
         response: {
-          success: true,
+          success: false,
           message: "No books found",
         },
       });
 });
 
+// @route   GET/api/v1/books/:bookId
+// @desc    get book
 export const getBook = handleAsync(async (ctx) => {
   const bookId = ctx.state.book;
   const result = await findOneBook(bookId);
@@ -80,6 +87,8 @@ export const getBook = handleAsync(async (ctx) => {
       });
 });
 
+// @route   PATCH/api/v1/books/
+// @desc    update book
 export const updateBook = handleAsync(async (ctx) => {
   const { bookId, ...updateBookData } = ctx.state.book;
   const timestamp = new Date();
@@ -94,22 +103,28 @@ export const updateBook = handleAsync(async (ctx) => {
   );
 
   const result = await updateBookById(bookId, updateQuery);
-
-  sendResponse(ctx, result.modifiedCount > 0 ? 200 : 400, {
-    response: {
-      success: result.modifiedCount > 0,
-      message:
-        result.modifiedCount > 0
-          ? "Book updated successfully"
-          : "Book not updated, please try again",
-    },
-  });
+  result.modifiedCount > 0
+    ? sendResponse(ctx, 200, {
+        response: {
+          success: true,
+          message: "Book updated successfully",
+        },
+      })
+    : sendResponse(ctx, 400, {
+        response: {
+          success: false,
+          message: "Book not update, please try again",
+        },
+      });
 });
 
+// @route   DELET/api/v1/books/bookId
+// @desc    delete book
 export const removeBook = handleAsync(async (ctx) => {
   const bookId = ctx.state.book;
-  const result = await deleteBook(bookId);
-  result.acknowledged
+  const bookDeleteResult = await deleteBook(bookId);
+  const reviewDeleteResult = await deleteReviews(bookId);
+  bookDeleteResult.deletedCount > 0 && reviewDeleteResult.acknowledged
     ? sendResponse(ctx, 200, {
         response: {
           success: true,
