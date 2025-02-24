@@ -11,7 +11,7 @@ export const validator = (validators) => async (ctx, next) => {
 
   if (errors.length > 0) {
     sendResponse(ctx, 400, {
-      message: "Validator Errors: ",
+      response: "Validator Errors: ",
       error: errors,
     });
     return;

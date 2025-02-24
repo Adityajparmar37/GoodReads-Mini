@@ -26,7 +26,7 @@ export const registerUser = handleAsync(async (ctx) => {
     updatedAt: timestamp,
   });
 
-  if (!result) {
+  if (!result.acknowledged) {
     sendResponse(ctx, 400, {
       response: {
         success: false,
@@ -43,16 +43,18 @@ export const registerUser = handleAsync(async (ctx) => {
     link,
   };
 
-  if (!(await sendEmailMail(userData.email, "verifyUser", mailData))) {
-    sendResponse(ctx, 400, {
-      response: { success: false, message: "Email not sent, please try again" },
-    });
-    return;
-  }
+  (await sendEmailMail(userData.email, "verifyUser", mailData))
+    ? sendResponse(ctx, 200, {
+        response: { success: true, message: "Email sent, please verify" },
+      })
+    : sendResponse(ctx, 400, {
+        response: {
+          success: false,
+          message: "Email not sent, please try again",
+        },
+      });
 
-  sendResponse(ctx, 200, {
-    response: { success: true, message: "Email sent, please verify" },
-  });
+  return;
 });
 
 // @route GET /api/v1/auth
@@ -64,15 +66,15 @@ export const verifyUser = handleAsync(async (ctx) => {
     updatedAt: new Date(),
   });
 
-  if (result.modifiedCount === 0) {
-    sendResponse(ctx, 400, {
-      response: { success: false, message: "User not verified" },
-    });
-    return;
-  }
-  sendResponse(ctx, 200, {
-    response: { success: true, message: "User verified, please login" },
-  });
+  result.modifiedCount
+    ? sendResponse(ctx, 200, {
+        response: { success: true, message: "User verified, please login" },
+      })
+    : sendResponse(ctx, 400, {
+        response: { success: false, message: "User not verified" },
+      });
+
+  return;
 });
 
 // @route   POST /api/v1/auth/login

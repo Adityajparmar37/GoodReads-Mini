@@ -11,10 +11,7 @@ export const findUser = async (data) =>
     .findOne({ email: data });
 
 export const findUserById = async (userId) =>
-  await client
-    .db(process.env.DATABASE)
-    .collection(users)
-    .findOne({ _id: userId });
+  await client.db(process.env.DATABASE).collection(users).findOne({ userId });
 
 export const updateUser = async (userId, updateData = {}) =>
   await client
