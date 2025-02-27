@@ -4,7 +4,7 @@ import { createId } from "../utils/createId.js";
 import { hashPassword } from "../utils/password.js";
 import { insertUser, updateUser } from "../query/auth.js";
 import { createVerificationLink } from "../utils/verificationLink.js";
-import { sendEmailMail } from "../utils/sendMail.js";
+import { sendEmailMail } from "../services/sendMail.js";
 import { generateToken } from "../utils/token.js";
 
 // @route   POST /api/v1/auth/register

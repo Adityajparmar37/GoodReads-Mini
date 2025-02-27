@@ -11,6 +11,7 @@ import { isValidCoverImage } from "./coverImage.js";
 import { isValidateId } from "./validId.js";
 import { isValidPageLimit } from "./pages.js";
 import { isValidComment } from "./comments.js";
+import { isPlatformValid } from "./platform.js";
 
 export {
   isValidDescription,
@@ -26,4 +27,5 @@ export {
   isValidateId,
   isValidPageLimit,
   isValidComment,
+  isPlatformValid,
 };

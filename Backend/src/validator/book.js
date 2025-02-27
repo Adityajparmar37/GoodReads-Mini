@@ -9,6 +9,7 @@ import {
   isValidateId,
   isValidPageLimit,
 } from "../shared/index.js";
+import { sortMapping } from "../utils/mapping.js";
 
 export const isAllowPublish = async (ctx) => {
   const userId = ctx.state.user;
@@ -217,8 +218,13 @@ export const validateSortOrder = (ctx) => {
       field: "sort",
       message: "Sort must be either 'AESC' or 'DESC' ",
     };
+  
+  const sortOrder = sort ? sortMapping.get(sort) : 1;
 
-  ctx.state.shared = { ...ctx.state.shared, ...(sort ? { sort } : {}) };
+  ctx.state.shared = {
+    ...ctx.state.shared,
+    ...(sortOrder ? { sortOrder } : {}),
+  };
 };
 
 export const validatepage = (ctx) => {

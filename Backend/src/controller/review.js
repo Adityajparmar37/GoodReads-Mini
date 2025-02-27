@@ -26,8 +26,7 @@ export const addReview = handleAsync(async (ctx) => {
     createdAt: timestamp,
     updateAt: timestamp,
   });
-
-  const ratingResult = await updateBookAvgRating(bookId);
+  const ratingResult = await updateBookAvgRating({bookId});
 
   result.acknowledged && ratingResult.acknowledged
     ? sendResponse(ctx, 200, {
@@ -43,7 +42,6 @@ export const addReview = handleAsync(async (ctx) => {
         },
       });
 });
-
 
 // @route   GET/api/v1/reviews/bookID
 // @route   GET/api/v1/reviews/
@@ -69,7 +67,6 @@ export const getReviews = handleAsync(async (ctx) => {
       });
 });
 
-
 // @route   POST/api/v1/reviews/
 // @desc    update review
 export const updateReview = handleAsync(async (ctx) => {
@@ -79,7 +76,7 @@ export const updateReview = handleAsync(async (ctx) => {
     ...reviewUpdateData,
     updateAt: timestamp,
   });
-  
+
   result.modifiedCount > 0
     ? sendResponse(ctx, 200, {
         response: {
@@ -94,7 +91,6 @@ export const updateReview = handleAsync(async (ctx) => {
         },
       });
 });
-
 
 // @route   DELETE/api/v1/reviews/
 // @desc    delete review

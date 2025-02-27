@@ -35,7 +35,6 @@ export const updateBookAvgRating = async (bookId) => {
     .db(process.env.DATABASE)
     .collection(reviews)
     .aggregate([
-      { $match: bookId },
       { $group: { _id: "$bookId", avgRating: { $avg: "$stars" } } },
       { $project: { _id: 0 } },
     ])

@@ -47,9 +47,7 @@ export const createBook = handleAsync(async (ctx) => {
 // @route   GET/api/v1/books/
 // @desc    get books
 export const getBooks = handleAsync(async (ctx) => {
-  const { sort, page, limit, searchTerm } = ctx.state.shared || {};
-  const sortOrder = sort ? sortMapping.get(sort) : 1;
-
+  const { sortOrder, page, limit, searchTerm } = ctx.state.shared || {};
   const result = await findBooks(searchTerm, sortOrder, page, limit);
   result.length > 0
     ? sendResponse(ctx, 200, {
