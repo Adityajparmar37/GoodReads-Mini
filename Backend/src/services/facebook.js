@@ -3,10 +3,9 @@ import axios from "axios";
 export const postToFacebook = async (ctx, postData) => {
   try {
     const { title, description, coverImage, author, averageRating } = postData;
-    const roundedRating = Math.round(averageRating * 2) / 2;
 
     const facebookPostData = {
-      message: `📔 Title: ${title}\u000A\u000A 📃 About: ${description}\u000A\u000A\u000A ✒️ Author: ${author}\u000A\u000A\u000A ⭐ Rating: ${roundedRating}`,
+      message: `📔 Title: ${title}\u000A\u000A 📃 About: ${description}\u000A\u000A\u000A ✒️ Author: ${author}\u000A\u000A\u000A ⭐ Rating: ${averageRating}`,
       url: coverImage,
     };
 
@@ -32,7 +31,6 @@ export const postToFacebook = async (ctx, postData) => {
 
 export const deleteFacebookPost = async (ctx, postId) => {
   try {
-    
     const response = await axios.delete(
       `${process.env.FACEBOOK_BASE_URL}/${postId}?access_token=${process.env.FACEBOOK_PAGE_ACCESS_TOKEN}`
     );

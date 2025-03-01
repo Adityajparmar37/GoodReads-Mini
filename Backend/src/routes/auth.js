@@ -1,7 +1,6 @@
 import Router from "koa-router";
 import { registerUser, loginUser, verifyUser } from "../controller/index.js";
 import { validator } from "../middleware/validator.js";
-import {isBodyEmpty} from "../shared/index.js"
 import {
   validatePassword,
   validateEmail,
@@ -13,6 +12,7 @@ import {
   validateToken,
   isUserVerified,
 } from "../validator/auth.js";
+import { isBodyEmpty } from "../validator/common.js";
 
 const route = new Router({ prefix: "/auth" });
 

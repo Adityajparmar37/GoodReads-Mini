@@ -8,7 +8,6 @@ import {
 } from "../query/books.js";
 import { deleteReviews } from "../query/review.js";
 import { createId } from "../utils/createId.js";
-import { sortMapping } from "../utils/mapping.js";
 import { sendResponse } from "../utils/sendResponse.js";
 
 // @route   POST /api/v1/books/
@@ -16,15 +15,14 @@ import { sendResponse } from "../utils/sendResponse.js";
 export const createBook = handleAsync(async (ctx) => {
   const bookData = ctx.state.book;
   const publishedBy = ctx.state.user;
-  const timestamp = new Date();
 
   const result = await insertBook({
     ...bookData,
     bookId: createId(),
     averageRating: 0,
     publishedBy,
-    createdAt: timestamp,
-    updatedAt: timestamp,
+    createdAt: timestamp(),
+    updatedAt: timestamp(),
   });
 
   result.acknowledged
@@ -89,7 +87,6 @@ export const getBook = handleAsync(async (ctx) => {
 // @desc    update book
 export const updateBook = handleAsync(async (ctx) => {
   const { bookId, ...updateBookData } = ctx.state.book;
-  const timestamp = new Date();
   const updateQuery = Object.keys(updateBookData).reduce(
     (acc, key) => ({
       ...acc,
@@ -97,10 +94,21 @@ export const updateBook = handleAsync(async (ctx) => {
         ? { $addToSet: { genres: { $each: updateBookData[key] } } }
         : { $set: { ...acc.$set, [key]: updateBookData[key] } }),
     }),
-    { $set: { updatedAt: timestamp } }
+    { $set: { updatedAt: timestamp() } }
   );
 
   const result = await updateBookById(bookId, updateQuery);
+
+  if (!result.acknowledged) {
+    sendResponse(ctx, 400, {
+      response: {
+        succuess: false,
+        message: "Book not updated please try again",
+      },
+    });
+    return;
+  }
+
   result.modifiedCount > 0
     ? sendResponse(ctx, 200, {
         response: {
@@ -122,17 +130,33 @@ export const removeBook = handleAsync(async (ctx) => {
   const bookId = ctx.state.book;
   const bookDeleteResult = await deleteBook(bookId);
   const reviewDeleteResult = await deleteReviews(bookId);
-  bookDeleteResult.deletedCount > 0 && reviewDeleteResult.acknowledged
+  const removeBookFromShelfResult = await deleteBookFromShelf(bookId);
+
+  if (
+    !bookDeleteResult.acknowledged ||
+    !reviewDeleteResult.acknowledged ||
+    !removeBookFromShelfResult.acknowledged
+  ) {
+    sendResponse(ctx, 400, {
+      response: {
+        success: false,
+        message: "Book not delete, please try again",
+      },
+    });
+    return;
+  }
+
+  bookDeleteResult.deletedCount > 0
     ? sendResponse(ctx, 200, {
         response: {
           success: true,
           message: "Book deleted successfully",
         },
       })
-    : sendResponse(ctx, 400, {
+    : sendResponse(ctx, 200, {
         response: {
           success: false,
-          message: "Book not delete, please try again",
+          message: "Book already removed",
         },
       });
 

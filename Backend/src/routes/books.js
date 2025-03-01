@@ -12,7 +12,6 @@ import {
   validateDescription,
   validateGenre,
   validatepage,
-  validateSortOrder,
   validateTitle,
   validateSearchTerm,
 } from "../validator/book.js";
@@ -23,7 +22,8 @@ import {
   getBooks,
   getBook,
 } from "../controller/index.js";
-import { isBodyEmpty } from "../shared/index.js";
+import { isBodyEmpty, validateSortOrder } from "../validator/common.js";
+
 
 const route = new Router({ prefix: "/books" });
 

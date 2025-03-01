@@ -36,7 +36,7 @@ export const updateBookAvgRating = async (bookId) => {
     .collection(reviews)
     .aggregate([
       { $group: { _id: "$bookId", avgRating: { $avg: "$stars" } } },
-      { $project: { _id: 0 } },
+      { $project: { _id: 0, avgRating: { $round: ["$avgRating", 2] } } },
     ])
     .toArray();
 
@@ -46,7 +46,7 @@ export const updateBookAvgRating = async (bookId) => {
   const result = await client
     .db(process.env.DATABASE)
     .collection(books)
-    .updateOne(bookId, { $set: { averageRating: avgRating } });
+    .updateOne({ bookId }, { $set: { averageRating: avgRating } });
 
   return result;
 };

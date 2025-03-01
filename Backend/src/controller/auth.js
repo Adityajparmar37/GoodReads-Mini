@@ -6,6 +6,7 @@ import { insertUser, updateUser } from "../query/auth.js";
 import { createVerificationLink } from "../utils/verificationLink.js";
 import { sendEmailMail } from "../services/sendMail.js";
 import { generateToken } from "../utils/token.js";
+import { timestamp } from "../utils/timestamp.js";
 
 // @route   POST /api/v1/auth/register
 // @desc    register user
@@ -14,7 +15,6 @@ export const registerUser = handleAsync(async (ctx) => {
 
   const userId = createId();
   const hashedPassword = await hashPassword(userData.password);
-  const timestamp = new Date();
 
   const result = await insertUser({
     ...userData,
@@ -22,8 +22,8 @@ export const registerUser = handleAsync(async (ctx) => {
     password: hashedPassword,
     allowPublish: false,
     isVerified: false,
-    createdAt: timestamp,
-    updatedAt: timestamp,
+    createdAt: timestamp(),
+    updatedAt: timestamp(),
   });
 
   if (!result.acknowledged) {
@@ -63,7 +63,7 @@ export const verifyUser = handleAsync(async (ctx) => {
   const { userId } = ctx.state.user;
   const result = await updateUser(userId, {
     isVerified: true,
-    updatedAt: new Date(),
+    updatedAt: timestamp(),
   });
 
   result.modifiedCount

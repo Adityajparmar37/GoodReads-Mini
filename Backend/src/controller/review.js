@@ -8,6 +8,7 @@ import {
 } from "../query/review.js";
 import { createId } from "../utils/createId.js";
 import { sendResponse } from "../utils/sendResponse.js";
+import { timestamp } from "../utils/timestamp.js";
 
 // @route   POST/api/v1/reviews/
 // @desc    add review
@@ -15,7 +16,7 @@ export const addReview = handleAsync(async (ctx) => {
   const reviewData = ctx.state.reviews;
   const { bookId } = ctx.state.book;
   const userId = ctx.state.user;
-  const timestamp = new Date();
+
   const result = await insertReview({
     ...reviewData,
     reviewId: createId(),
@@ -23,10 +24,10 @@ export const addReview = handleAsync(async (ctx) => {
     userId,
     isLiked: reviewData.isLiked ?? false,
     stars: reviewData.stars ?? 0,
-    createdAt: timestamp,
-    updateAt: timestamp,
+    createdAt: timestamp(),
+    updateAt: timestamp(),
   });
-  const ratingResult = await updateBookAvgRating({bookId});
+  const ratingResult = await updateBookAvgRating({ bookId });
 
   result.acknowledged && ratingResult.acknowledged
     ? sendResponse(ctx, 200, {
@@ -71,11 +72,20 @@ export const getReviews = handleAsync(async (ctx) => {
 // @desc    update review
 export const updateReview = handleAsync(async (ctx) => {
   const { reviewId, ...reviewUpdateData } = ctx.state.reviews;
-  const timestamp = new Date();
   const result = await updateReviewById(reviewId, {
     ...reviewUpdateData,
-    updateAt: timestamp,
+    updateAt: timestamp(),
   });
+
+  if (!result.acknowledged) {
+    sendResponse(ctx, 400, {
+      response: {
+        succuess: false,
+        message: "Review not updated please try again",
+      },
+    });
+    return;
+  }
 
   result.modifiedCount > 0
     ? sendResponse(ctx, 200, {
@@ -84,10 +94,10 @@ export const updateReview = handleAsync(async (ctx) => {
           message: "Review updated successfully",
         },
       })
-    : sendResponse(ctx, 400, {
+    : sendResponse(ctx, 200, {
         response: {
           success: false,
-          message: "Review is same",
+          message: "Review remains same",
         },
       });
 });
@@ -98,6 +108,16 @@ export const removeReview = handleAsync(async (ctx) => {
   const reviewId = ctx.state.shared;
   const result = await deleteReview(reviewId);
 
+  if (!result.acknowledged) {
+    sendResponse(ctx, 400, {
+      response: {
+        success: false,
+        message: "Review not delete, please try again",
+      },
+    });
+    return;
+  }
+
   result.deletedCount > 0
     ? sendResponse(ctx, 200, {
         response: {
@@ -105,10 +125,10 @@ export const removeReview = handleAsync(async (ctx) => {
           message: "Review deleted",
         },
       })
-    : sendResponse(ctx, 400, {
+    : sendResponse(ctx, 200, {
         response: {
           success: false,
-          message: "Review not delete, please try again",
+          message: "Review already remove",
         },
       });
 });

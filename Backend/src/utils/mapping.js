@@ -1,16 +1,15 @@
 import { deleteFacebookPost, postToFacebook } from "../services/facebook.js";
 import { postToInstagram } from "../services/instagram.js";
 
-export const sortMapping = new Map([
-  ["AESC", 1],
-  ["DESC", -1],
-]);
+export const sortMapping = Object.freeze({
+  AESC: 1,
+  DESC: -1,
+});
 
-export const platformMapping = new Map([
-  ["Facebook", 1],
-  ["Instagram", 2],
-]);
-
+export const platformMapping = Object.freeze({
+  Facebook: 1,
+  Instagram: 2,
+});
 
 export const platformActionsToCreatePost = Object.freeze({
   1: postToFacebook,
@@ -19,4 +18,10 @@ export const platformActionsToCreatePost = Object.freeze({
 
 export const platformActionsToDeletePost = Object.freeze({
   1: deleteFacebookPost,
+});
+
+export const bookStatusMapping = Object.freeze({
+  1: "wantToRead",
+  2: "Reading",
+  3: "Read",
 });

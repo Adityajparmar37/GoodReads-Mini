@@ -8,6 +8,16 @@ import {
 } from "./books.js";
 import { addReview, removeReview, updateReview, getReviews } from "./review.js";
 import { postBook, deleteBookPost, getPosts } from "./post.js";
+import {
+  createShelf,
+  moveBookfromShelf,
+  removeBookfromShelf,
+  removeShelf,
+  addBookToShelves,
+  updateShelf,
+  getShelves,
+  getShelf,
+} from "./shelf.js";
 
 export {
   registerUser,
@@ -25,4 +35,12 @@ export {
   postBook,
   deleteBookPost,
   getPosts,
+  createShelf,
+  moveBookfromShelf,
+  removeBookfromShelf,
+  removeShelf,
+  addBookToShelves,
+  updateShelf,
+  getShelves,
+  getShelf,
 };

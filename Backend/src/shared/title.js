@@ -1,5 +1,5 @@
 export const isValidTitle = (title) => {
-  if (!title || typeof title !== "string") {
+  if (typeof title !== "string") {
     return { success: false, message: "Title must be a valid string." };
   }
 

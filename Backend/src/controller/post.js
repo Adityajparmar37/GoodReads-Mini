@@ -20,7 +20,6 @@ export const postBook = handleAsync(async (ctx) => {
   const platforms = ctx.state.post?.platforms;
   const userId = ctx.state.user;
   const bookId = ctx.state.book;
-  const timestamp = new Date();
   const bookDetails = await findOneBook(bookId);
 
   // run platform service by mapping its object
@@ -51,7 +50,7 @@ export const postBook = handleAsync(async (ctx) => {
         postId: post.postId,
         platform: post.platform,
         bookId: bookDetails.bookId,
-        createdAt: timestamp,
+        createdAt: timestamp(),
       })
   );
 

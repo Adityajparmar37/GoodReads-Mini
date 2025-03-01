@@ -178,7 +178,7 @@ export const isBookExist = async (ctx) => {
 };
 
 export const validateBookId = (ctx) => {
-  const bookId = ctx.params.bookId;
+  const bookId = ctx.params.bookId || ctx.request.body.bookId;
 
   if (!bookId)
     return {
@@ -208,23 +208,6 @@ export const isBookValid = async (ctx) => {
       message: "Book does not exist",
     };
   }
-};
-
-export const validateSortOrder = (ctx) => {
-  const sort = ctx.query.sort;
-
-  if (sort && !["AESC", "DESC"].includes(ctx.query.sort))
-    return {
-      field: "sort",
-      message: "Sort must be either 'AESC' or 'DESC' ",
-    };
-  
-  const sortOrder = sort ? sortMapping.get(sort) : 1;
-
-  ctx.state.shared = {
-    ...ctx.state.shared,
-    ...(sortOrder ? { sortOrder } : {}),
-  };
 };
 
 export const validatepage = (ctx) => {

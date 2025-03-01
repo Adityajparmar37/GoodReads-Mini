@@ -3,10 +3,9 @@ import axios from "axios";
 export const postToInstagram = async (ctx, postData) => {
   try {
     const { title, description, coverImage, author, averageRating } = postData;
-    const roundedRating = Math.round(averageRating * 2) / 2;
 
     const params = new URLSearchParams({
-      caption: `📔 Title: ${title}\n\n 📃 About: ${description}\n\n\n ✒️ Author: ${author}\n\n\n ⭐ Rating: ${roundedRating}`,
+      caption: `📔 Title: ${title}\n\n 📃 About: ${description}\n\n\n ✒️ Author: ${author}\n\n\n ⭐ Rating: ${averageRating}`,
       image_url: coverImage,
       access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN,
     });
@@ -18,7 +17,6 @@ export const postToInstagram = async (ctx, postData) => {
     );
 
     if (postResponse.status === 200) {
-
       const publishPostResponse = await axios.post(
         `${process.env.INSTAGRAM_BASE_URL}/${process.env.INSTAGRAM_ID}/media_publish?creation_id=${postResponse.data.id}&access_token=${process.env.FACEBOOK_PAGE_ACCESS_TOKEN}`
       );
@@ -29,8 +27,7 @@ export const postToInstagram = async (ctx, postData) => {
             success: false,
             message: "Not published, please try again",
             platform: 2,
-        };
-      
+          };
     } else {
       return {
         success: false,

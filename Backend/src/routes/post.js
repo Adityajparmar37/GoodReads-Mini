@@ -2,12 +2,8 @@ import Router from "koa-router";
 import { postBook, deleteBookPost, getPosts } from "../controller/index.js";
 import { auth } from "../middleware/auth.js";
 import { validator } from "../middleware/validator.js";
-import { isBodyEmpty } from "../shared/index.js";
-import {
-  isBookValid,
-  validateBookId,
-  validateSortOrder,
-} from "../validator/book.js";
+import { isBookValid, validateBookId } from "../validator/book.js";
+import { isBodyEmpty, validateSortOrder } from "../validator/common.js";
 import {
   isPostExist,
   validatePlatform,

@@ -8,10 +8,10 @@ export const isValidDescription = (description) => {
   const trimmedDescription = description.trim();
   const words = trimmedDescription.split(/\s+/);
 
-  if (words.length <= 10 || words.length > 200)
+  if (words.length <= 5 || words.length > 200)
     return {
       success: false,
-      message: "Minimum words atlead 10 and Maximum words atmax 200",
+      message: "Minimum words at least 5 and Maximum words at max 200",
     };
 
   if (trimmedDescription.split(/\s+/).every((word) => /^\d+$/.test(word)))

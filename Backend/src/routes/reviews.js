@@ -1,7 +1,6 @@
 import Router from "koa-router";
 import { auth } from "../middleware/auth.js";
 import { validator } from "../middleware/validator.js";
-import { isBodyEmpty } from "../shared/index.js";
 import { isBookValid, validateBookId } from "../validator/book.js";
 import {
   validComments,
@@ -16,6 +15,7 @@ import {
   updateReview,
   getReviews,
 } from "../controller/index.js";
+import { isBodyEmpty } from "../validator/common.js";
 
 const route = new Router({ prefix: "/reviews" });
 
