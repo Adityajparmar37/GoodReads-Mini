@@ -7,9 +7,7 @@ import {
   isValidBookPages,
   isValidTitle,
   isValidateId,
-  isValidPageLimit,
 } from "../shared/index.js";
-import { sortMapping } from "../utils/mapping.js";
 
 export const isAllowPublish = async (ctx) => {
   const userId = ctx.state.user;
@@ -210,44 +208,3 @@ export const isBookValid = async (ctx) => {
   }
 };
 
-export const validatepage = (ctx) => {
-  const { page, limit } = ctx.query;
-
-  if (page) {
-    if (!isValidPageLimit(page)) {
-      return {
-        field: "page",
-        message: "Page must be a positive number",
-      };
-    }
-  }
-
-  if (limit) {
-    if (!isValidPageLimit(limit)) {
-      return {
-        field: "limit",
-        message: "Limit must be a positive number",
-      };
-    }
-  }
-
-  ctx.state.shared = {
-    ...ctx.state.shared,
-    ...(page ? { page: parseInt(page, 10) } : {}),
-    ...(limit ? { limit: parseInt(limit, 10) } : {}),
-  };
-};
-
-export const validateSearchTerm = (ctx) => {
-  const searchTerm = ctx.query.search;
-  if (searchTerm && typeof searchTerm !== "string")
-    return {
-      field: "search",
-      message: "Please provide valid search term",
-    };
-
-  ctx.state.shared = {
-    ...ctx.state.shared,
-    ...(searchTerm ? { searchTerm } : {}),
-  };
-};

@@ -48,8 +48,18 @@ export const createShelf = handleAsync(async (ctx) => {
 export const getShelves = handleAsync(async (ctx) => {
   const userId = ctx.state.user;
   const fetchUserOnly = ctx.path.endsWith("/my");
-  const query = fetchUserOnly ? { userId } : { isPrivate: false };
-  const shelvesResult = await findShevles(query);
+  const { searchTerm, sortOrder, page, limit } = ctx.state.shared;
+  const isPrivateShevles = fetchUserOnly ? { userId } : { isPrivate: false };
+  const query = {
+    ...isPrivateShevles,
+    ...(searchTerm && {
+      $or: [
+        { shelfName: { $regex: searchTerm, $options: "i" } },
+        { description: { $regex: searchTerm, $options: "i" } },
+      ],
+    }),
+  };
+  const shelvesResult = await findShevles(query, sortOrder, page, limit);
 
   if (shelvesResult.length === 0) {
     sendResponse(ctx, 400, {
@@ -179,7 +189,6 @@ export const removeShelf = handleAsync(async (ctx) => {
 // @desc    add book to multiple shelves
 export const addBookToShelves = handleAsync(async (ctx) => {
   const shelves = ctx.state?.shelf?.shelvesIds;
-  console.log(shelves);
   const { bookId } = ctx.state?.book;
   const shelvesBook = shelves?.map((shelfId) => ({
     shelfId,

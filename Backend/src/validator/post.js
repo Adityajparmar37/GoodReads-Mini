@@ -69,7 +69,7 @@ export const validatePlatform = (ctx) => {
       message: "Please provide valid platform",
     };
 
-  const platform = platformMapping.get(platformQuery);
+  const platform = platformMapping[platformQuery];
 
   ctx.state.shared = {
     ...ctx.state.shared,

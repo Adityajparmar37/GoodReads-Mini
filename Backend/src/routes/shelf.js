@@ -1,7 +1,12 @@
 import Router from "koa-router";
 import { auth } from "../middleware/auth.js";
 import { validator } from "../middleware/validator.js";
-import { isBodyEmpty } from "../validator/common.js";
+import {
+  isBodyEmpty,
+  validatepage,
+  validateSearchTerm,
+  validateSortOrder,
+} from "../validator/common.js";
 import {
   isPrivateValid,
   validateDescription,
@@ -28,7 +33,12 @@ import { isBookValid, validateBookId } from "../validator/book.js";
 
 const route = new Router({ prefix: "/shelf" });
 
-route.get("/", auth, getShelves);
+route.get(
+  "/",
+  auth,
+  validator([validateSortOrder, validateSearchTerm, validatepage]),
+  getShelves
+);
 
 route.get("/my", auth, getShelves);
 

@@ -22,6 +22,8 @@ export const registerUser = handleAsync(async (ctx) => {
     password: hashedPassword,
     allowPublish: false,
     isVerified: false,
+    followerCount: 0,
+    followingCount: 0,
     createdAt: timestamp(),
     updatedAt: timestamp(),
   });
@@ -62,8 +64,10 @@ export const registerUser = handleAsync(async (ctx) => {
 export const verifyUser = handleAsync(async (ctx) => {
   const { userId } = ctx.state.user;
   const result = await updateUser(userId, {
-    isVerified: true,
-    updatedAt: timestamp(),
+    $set: {
+      isVerified: true,
+      updatedAt: timestamp(),
+    },
   });
 
   result.modifiedCount

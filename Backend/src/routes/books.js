@@ -11,9 +11,7 @@ import {
   validateCoverImage,
   validateDescription,
   validateGenre,
-  validatepage,
   validateTitle,
-  validateSearchTerm,
 } from "../validator/book.js";
 import {
   createBook,
@@ -22,7 +20,7 @@ import {
   getBooks,
   getBook,
 } from "../controller/index.js";
-import { isBodyEmpty, validateSortOrder } from "../validator/common.js";
+import { isBodyEmpty, validatepage, validateSearchTerm, validateSortOrder } from "../validator/common.js";
 
 
 const route = new Router({ prefix: "/books" });

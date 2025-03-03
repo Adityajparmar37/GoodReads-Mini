@@ -13,8 +13,8 @@ export const findUser = async (data) =>
 export const findUserById = async (userId) =>
   await client.db(process.env.DATABASE).collection(users).findOne({ userId });
 
-export const updateUser = async (userId, updateData = {}) =>
+export const updateUser = async (userId, updateQuery) =>
   await client
     .db(process.env.DATABASE)
     .collection(users)
-    .updateOne({ userId }, { $set: { ...updateData, updatedAt: new Date() } });
+    .updateOne({ userId }, updateQuery);

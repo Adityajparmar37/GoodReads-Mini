@@ -18,6 +18,7 @@ import {
   getShelves,
   getShelf,
 } from "./shelf.js";
+import { followUser } from "./follow.js";
 
 export {
   registerUser,
@@ -43,4 +44,5 @@ export {
   updateShelf,
   getShelves,
   getShelf,
+  followUser,
 };

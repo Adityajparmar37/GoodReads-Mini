@@ -15,11 +15,15 @@ export const deleteShelf = async (shelfId) =>
 export const findOneShelf = async (filter) =>
   await client.db(process.env.DATABASE).collection(shelves).findOne(filter);
 
-export const findShevles = async (filter) =>
+export const findShevles = async (query, sortOrder, page, limit) =>
   await client
     .db(process.env.DATABASE)
     .collection(shelves)
-    .find(filter)
+    .find(query)
+    .collation({ locale: "en", strength: 1 })
+    .sort({ createdAt: sortOrder })
+    .skip((page - 1) * limit)
+    .limit(limit)
     .toArray();
 
 export const updateShelfById = async (shelfId, updateShelfData) =>
