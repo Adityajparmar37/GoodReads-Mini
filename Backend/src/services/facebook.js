@@ -1,4 +1,9 @@
 import axios from "axios";
+import {
+  FACEBOOK_BASE_URL,
+  FACEBOOK_PAGE_ACCESS_TOKEN,
+  FACEBOOK_PAGE_ID,
+} from "../config/index.js";
 
 export const postToFacebook = async (ctx, postData) => {
   try {
@@ -10,7 +15,7 @@ export const postToFacebook = async (ctx, postData) => {
     };
 
     const response = await axios.post(
-      `${process.env.FACEBOOK_BASE_URL}/${process.env.FACEBOOK_PAGE_ID}/photos?access_token=${process.env.FACEBOOK_PAGE_ACCESS_TOKEN}`,
+      `${FACEBOOK_BASE_URL}/${FACEBOOK_PAGE_ID}/photos?access_token=${FACEBOOK_PAGE_ACCESS_TOKEN}`,
       facebookPostData
     );
 
@@ -32,7 +37,7 @@ export const postToFacebook = async (ctx, postData) => {
 export const deleteFacebookPost = async (ctx, postId) => {
   try {
     const response = await axios.delete(
-      `${process.env.FACEBOOK_BASE_URL}/${postId}?access_token=${process.env.FACEBOOK_PAGE_ACCESS_TOKEN}`
+      `${FACEBOOK_BASE_URL}/${postId}?access_token=${FACEBOOK_PAGE_ACCESS_TOKEN}`
     );
 
     return response.data.success

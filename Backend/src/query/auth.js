@@ -1,20 +1,38 @@
-import { client } from "../config/db.js";
+import { client, DATABASE } from "../config/index.js";
 const users = "users";
 
-export const insertUser = async (data) =>
-  await client.db(process.env.DATABASE).collection(users).insertOne(data);
+export const insertUser = (data) =>
+  client.db(DATABASE).collection(users).insertOne(data);
 
-export const findUser = async (data) =>
-  await client
-    .db(process.env.DATABASE)
+export const findUser = (data) =>
+  client.db(DATABASE).collection(users).findOne({ email: data });
+
+export const findUserById = (userId) =>
+  client.db(DATABASE).collection(users).findOne({ userId });
+
+export const updateUser = (userId, updateQuery) =>
+  client.db(DATABASE).collection(users).updateOne({ userId }, updateQuery);
+
+export const incrementFollowerCount = (userId) =>
+  client
+    .db(DATABASE)
     .collection(users)
-    .findOne({ email: data });
+    .updateOne(userId, { $inc: { followerCount: 1 } });
 
-export const findUserById = async (userId) =>
-  await client.db(process.env.DATABASE).collection(users).findOne({ userId });
-
-export const updateUser = async (userId, updateQuery) =>
-  await client
-    .db(process.env.DATABASE)
+export const incrementFollowingCount = (userId) =>
+  client
+    .db(DATABASE)
     .collection(users)
-    .updateOne({ userId }, updateQuery);
+    .updateOne(userId, { $inc: { followingCount: 1 } });
+
+export const decrementFollowerCount = (userId) =>
+  client
+    .db(DATABASE)
+    .collection(users)
+    .updateOne(userId, { $inc: { followerCount: -1 } });
+
+export const decrementFollowingCount = (userId) =>
+  client
+    .db(DATABASE)
+    .collection(users)
+    .updateOne(userId, { $inc: { followingCount: -1 } });

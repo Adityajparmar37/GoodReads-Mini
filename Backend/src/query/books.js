@@ -1,11 +1,11 @@
-import { client } from "../config/db.js";
+import { client, DATABASE } from "../config/index.js";
 const books = "books";
 
-export const insertBook = async (bookData) =>
-  await client.db(process.env.DATABASE).collection(books).insertOne(bookData);
+export const insertBook = (bookData) =>
+  client.db(DATABASE).collection(books).insertOne(bookData);
 
-export const findOneBook = async (filter) =>
-  await client.db(process.env.DATABASE).collection(books).findOne(filter);
+export const findOneBook = (filter) =>
+  client.db(DATABASE).collection(books).findOne(filter);
 
 export const findBooks = async (
   searchTerm,
@@ -49,17 +49,14 @@ export const findBooks = async (
   );
 
   return await client
-    .db(process.env.DATABASE)
+    .db(DATABASE)
     .collection("books")
     .aggregate(pipeline)
     .toArray();
 };
 
-export const updateBookById = async (bookId, updateQuery) =>
-  await client
-    .db(process.env.DATABASE)
-    .collection(books)
-    .updateOne({ bookId }, updateQuery);
+export const updateBookById = (bookId, updateQuery) =>
+  client.db(DATABASE).collection(books).updateOne({ bookId }, updateQuery);
 
-export const deleteBook = async (bookId) =>
-  await client.db(process.env.DATABASE).collection(books).deleteOne(bookId);
+export const deleteBook = (bookId) =>
+  client.db(DATABASE).collection(books).deleteOne(bookId);

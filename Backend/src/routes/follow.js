@@ -4,20 +4,18 @@ import {
   getFollowers,
   getFollowing,
   unfollowUser,
-} from "../controller/follow.js";
+} from "../controller/index.js";
 import { auth } from "../middleware/auth.js";
 import { validator } from "../middleware/validator.js";
 import {
   isBodyEmpty,
-  IsUserExist,
   validatepage,
-  validateSearchTerm,
   validateSortOrder,
 } from "../validator/common.js";
 import {
   isMutualFollowers,
   isValidFollowingId,
-  IsFollowerExist,
+  IsFollowingUserExist,
 } from "../validator/follow.js";
 
 const route = new Router({ prefix: "/follow" });
@@ -28,7 +26,7 @@ route.post(
   validator([
     isBodyEmpty,
     isValidFollowingId,
-    IsFollowerExist,
+    IsFollowingUserExist,
     isMutualFollowers,
   ]),
   followUser
@@ -40,7 +38,7 @@ route.delete(
   validator([
     isBodyEmpty,
     isValidFollowingId,
-    IsFollowerExist,
+    IsFollowingUserExist,
     isMutualFollowers,
   ]),
   unfollowUser

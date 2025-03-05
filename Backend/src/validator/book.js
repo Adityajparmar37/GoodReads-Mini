@@ -198,13 +198,14 @@ export const validateBookId = (ctx) => {
 
 export const isBookValid = async (ctx) => {
   const bookId = ctx?.state?.book?.bookId;
-  const result = await findOneBook({ bookId });
 
-  if (!result) {
-    return {
-      field: "Book",
-      message: "Book does not exist",
-    };
+  if (bookId) {
+    const result = await findOneBook({ bookId });
+    if (!result) {
+      return {
+        field: "Book",
+        message: "Book does not exist",
+      };
+    }
   }
 };
-

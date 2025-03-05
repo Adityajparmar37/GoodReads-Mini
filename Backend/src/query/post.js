@@ -1,18 +1,18 @@
-import { client } from "../config/db.js";
+import { client, DATABASE } from "../config/index.js";
 const posts = "posts";
 
-export const insertPost = async (post) =>
-  await client.db(process.env.DATABASE).collection(posts).insertOne(post);
+export const insertPost = (post) =>
+  client.db(DATABASE).collection(posts).insertOne(post);
 
-export const findPostById = async (postId) =>
-  await client.db(process.env.DATABASE).collection(posts).findOne(postId);
+export const findPostById = (postId) =>
+  client.db(DATABASE).collection(posts).findOne(postId);
 
-export const deletePost = async (postId) =>
-  await client.db(process.env.DATABASE).collection(posts).deleteOne(postId);
+export const deletePost = (postId) =>
+  client.db(DATABASE).collection(posts).deleteOne(postId);
 
-export const findPosts = async (filter, sortOrder) =>
-  await client
-    .db(process.env.DATABASE)
+export const findPosts = (filter, sortOrder) =>
+  client
+    .db(DATABASE)
     .collection(posts)
     .find(filter)
     .sort({ createdAt: sortOrder })

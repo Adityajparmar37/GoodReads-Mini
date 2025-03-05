@@ -1,5 +1,10 @@
 import { handleAsync } from "../middleware/handleAsync.js";
-import { updateUser } from "../query/auth.js";
+import {
+  incrementFollowerCount,
+  incrementFollowingCount,
+  decrementFollowerCount,
+  decrementFollowingCount,
+} from "../query/auth.js";
 import {
   removeFollower,
   insertFollower,
@@ -13,15 +18,18 @@ import { timestamp } from "../utils/timestamp.js";
 // @desc    follow other user
 export const followUser = handleAsync(async (ctx) => {
   const followeeId = ctx.state.user;
-  const followingId = ctx.state.follow?.followingId;
+  const { followingId, userName } = ctx.state.follow;
+  
+  const incrementFollowers = await incrementFollowingCount({
+    userId: followeeId,
+  });
 
-  const updateFollowerCount = await updateUser(followeeId, {
-    $inc: { followingCount: 1 },
+  const incrementFollowing = await incrementFollowerCount({
+    userId: followingId,
   });
-  const updateFollowingCount = await updateUser(followingId, {
-    $inc: { followerCount: 1 },
-  });
+
   const result = await insertFollower({
+    userName,
     followeeId,
     followingId,
     createdAt: timestamp(),
@@ -29,8 +37,8 @@ export const followUser = handleAsync(async (ctx) => {
   });
 
   result.acknowledged &&
-  updateFollowerCount.matchedCount === 1 &&
-  updateFollowingCount.matchedCount === 1
+  incrementFollowers.matchedCount === 1 &&
+  incrementFollowing.matchedCount === 1
     ? sendResponse(ctx, 200, {
         response: {
           success: true,
@@ -51,11 +59,11 @@ export const unfollowUser = handleAsync(async (ctx) => {
   const followeeId = ctx.state.user;
   const followingId = ctx.state.follow?.followingId;
 
-  const updateFollowerCount = await updateUser(followeeId, {
-    $inc: { followingCount: -1 },
+  const decrememtFollower = await decrementFollowingCount({
+    userId: followeeId,
   });
-  const updateFollowingCount = await updateUser(followingId, {
-    $inc: { followerCount: -1 },
+  const decrememtFollowing = await decrementFollowerCount({
+    userId: followingId,
   });
   const result = await removeFollower({
     followeeId,
@@ -63,8 +71,8 @@ export const unfollowUser = handleAsync(async (ctx) => {
   });
 
   result.deletedCount === 1 &&
-  updateFollowerCount.matchedCount === 1 &&
-  updateFollowingCount.matchedCount === 1
+  decrememtFollower.matchedCount === 1 &&
+  decrememtFollowing.matchedCount === 1
     ? sendResponse(ctx, 200, {
         response: {
           success: true,

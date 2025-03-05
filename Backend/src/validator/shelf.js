@@ -90,13 +90,16 @@ export const validateShelfId = (ctx) => {
 
 export const isShelfExist = async (ctx) => {
   const shelfId = ctx.state?.shared;
-  const result = await findOneShelf(shelfId);
 
-  if (!result)
-    return {
-      field: "shelf",
-      message: "Shelf does not exist",
-    };
+  if (shelfId) {
+    const result = await findOneShelf(shelfId);
+
+    if (!result)
+      return {
+        field: "shelf",
+        message: "Shelf does not exist",
+      };
+  }
 };
 
 export const isShelfValid = async (ctx) => {

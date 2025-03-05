@@ -47,13 +47,23 @@ export const isMutualFollowers = async (ctx) => {
     };
 };
 
-export const IsFollowerExist = async (ctx) => {
+export const IsFollowingUserExist = async (ctx) => {
   const followingId = ctx.state.follow?.followingId;
-  const followingExist = await findUserById(followingId);
 
-  if (!followingExist)
-    return {
-      field: "Following",
-      message: "Following user does not exist",
-    };
+  let followingUser = null;
+  if (followingId) {
+    const followingUser = await findUserById(followingId);
+    if (!followingUser)
+      return {
+        field: "Following",
+        message: "Following user does not exist",
+      };
+  }
+
+  ctx.state.follow = {
+    ...ctx.state.follow,
+    ...(followingUser
+      ? { userName: `${followingUser.firstName} ${followingUser.lastName}` }
+      : {}),
+  };
 };

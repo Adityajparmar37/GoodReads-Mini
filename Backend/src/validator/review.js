@@ -13,7 +13,6 @@ export const validateLiked = (ctx) => {
     ...ctx.state.reviews,
     ...(isLiked !== undefined ? { isLiked } : {}),
   };
-
 };
 
 export const validateStars = (ctx) => {
@@ -71,12 +70,15 @@ export const validateReviewId = (ctx) => {
 
 export const isReviewExist = async (ctx) => {
   const reviewId = ctx?.state?.reviews?.reviewId;
-  const result = await findOneReview({ reviewId });
 
-  if (!result) {
-    return {
-      field: "Review",
-      message: "Review does not exist",
-    };
+  if (reviewId) {
+    const result = await findOneReview({ reviewId });
+
+    if (!result) {
+      return {
+        field: "Review",
+        message: "Review does not exist",
+      };
+    }
   }
 };

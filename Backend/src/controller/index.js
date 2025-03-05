@@ -18,7 +18,19 @@ import {
   getShelves,
   getShelf,
 } from "./shelf.js";
-import { followUser } from "./follow.js";
+import {
+  followUser,
+  getFollowers,
+  getFollowing,
+  unfollowUser,
+} from "./follow.js";
+import {
+  sendFriendRequest,
+  getAcceptedFriendList,
+  removeFriend,
+  acceptFriendRequst,
+  getPendingFriendList,
+} from "./friend.js";
 
 export {
   registerUser,
@@ -45,4 +57,12 @@ export {
   getShelves,
   getShelf,
   followUser,
+  getFollowers,
+  getFollowing,
+  unfollowUser,
+  sendFriendRequest,
+  getAcceptedFriendList,
+  removeFriend,
+  acceptFriendRequst,
+  getPendingFriendList,
 };

@@ -47,13 +47,16 @@ export const validateSharedId = (ctx) => {
 
 export const isPostExist = async (ctx) => {
   const sharedId = ctx?.state?.shared;
-  const result = await findPostById(sharedId);
 
-  if (!result)
-    return {
-      field: "Post",
-      message: "Post does not exist",
-    };
+  if (sharedId) {
+    const result = await findPostById(sharedId);
+
+    if (!result)
+      return {
+        field: "Post",
+        message: "Post does not exist",
+      };
+  }
 };
 
 export const validatePlatform = (ctx) => {

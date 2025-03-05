@@ -2,14 +2,15 @@ import nodemailer from "nodemailer";
 import pug from "pug";
 import path from "path";
 import { fileURLToPath } from "url";
+import { EMAIL, MAILPASS } from "../config/index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL,
-    pass: process.env.MAILPASS,
+    user: EMAIL,
+    pass: MAILPASS,
   },
 });
 

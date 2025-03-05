@@ -11,6 +11,12 @@ export const platformMapping = Object.freeze({
   Instagram: 2,
 });
 
+export const friendStatus = Object.freeze({
+  pending: 0,
+  accepted: 1,
+});
+
+//Social Media Service Mapping
 export const platformActionsToCreatePost = Object.freeze({
   1: postToFacebook,
   2: postToInstagram,
@@ -18,10 +24,4 @@ export const platformActionsToCreatePost = Object.freeze({
 
 export const platformActionsToDeletePost = Object.freeze({
   1: deleteFacebookPost,
-});
-
-export const bookStatusMapping = Object.freeze({
-  1: "wantToRead",
-  2: "Reading",
-  3: "Read",
 });
