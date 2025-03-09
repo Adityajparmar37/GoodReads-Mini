@@ -33,6 +33,7 @@ import { isBookValid, validateBookId } from "../validator/book.js";
 
 const route = new Router({ prefix: "/shelf" });
 
+//shelves route
 route.get(
   "/",
   auth,
@@ -40,7 +41,12 @@ route.get(
   getShelves
 );
 
-route.get("/my", auth, getShelves);
+route.get(
+  "/my",
+  auth,
+  validator([validateSortOrder, validateSearchTerm, validatepage]),
+  getShelves
+);
 
 route.get(
   "/:shelfId",
@@ -76,6 +82,7 @@ route.patch(
   updateShelf
 );
 
+// shelf's book route
 route.delete(
   "/removeBook",
   auth,

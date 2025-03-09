@@ -1,4 +1,4 @@
-export const isValidDescription = (description) => {
+export const isValidDescription = (description,min,max) => {
   if (typeof description !== "string")
     return {
       success: false,
@@ -8,7 +8,7 @@ export const isValidDescription = (description) => {
   const trimmedDescription = description.trim();
   const words = trimmedDescription.split(/\s+/);
 
-  if (words.length <= 5 || words.length > 200)
+  if (words.length <= min || words.length > max)
     return {
       success: false,
       message: "Minimum words at least 5 and Maximum words at max 200",

@@ -25,3 +25,43 @@ export const platformActionsToCreatePost = Object.freeze({
 export const platformActionsToDeletePost = Object.freeze({
   1: deleteFacebookPost,
 });
+
+//role's permission mapping
+export const permissionsLists = new Set([
+  "canEditGroup",
+  "canDeleteGroup",
+  "canAddMembers",
+]);
+
+export const rolePermissions = {
+  O: Object.freeze({
+    canEditGroup: true,
+    canDeleteGroup: true,
+    canAddMembers: true,
+  }),
+  A: Object.freeze({
+    canEditGroup: true,
+    canDeleteGroup: true,
+    canAddMembers: true,
+  }),
+  M: Object.freeze({
+    canEditGroup: true,
+  }),
+};
+
+export const restrictedMembers = {
+  U: Object.freeze({ canDeleteGroup: false, canEditGroup: false }),
+};
+
+//access mapping
+export const groupAccess = {
+  DELETE: {
+    canDeleteGroup: ["/api/v1/group/:groupId"],
+  },
+  PATCH: {
+    canEditGroup: ["/api/v1/group/:groupId"],
+  },
+  POST: {
+    canAddMembers: ["/api/v1/group/invite"],
+  },
+};

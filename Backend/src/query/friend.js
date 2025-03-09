@@ -27,9 +27,13 @@ export const getFriendList = (userId, sortOrder, page, limit) =>
           status: 1,
         },
       },
+
+      // user has some friends and user itself is someone else friend, both case will be taken in consider
       {
         $lookup: {
           from: "users",
+
+          //need to only apply lookup for friendIds of user list, not in case where user itself is friend of someone 
           let: {
             friendRef: {
               $cond: [{ $eq: ["$userId", userId] }, "$friendId", "$userId"],
@@ -54,6 +58,8 @@ export const getFriendList = (userId, sortOrder, page, limit) =>
       {
         $unwind: "$friendDetails",
       },
+
+      //get friend's full name 
       {
         $project: { _id: 0, fullName: "$friendDetails.fullName", createdAt: 1 },
       },

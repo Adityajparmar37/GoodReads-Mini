@@ -68,11 +68,9 @@ export const validateSearchTerm = (ctx) => {
 };
 
 export const IsUserExist = async (ctx) => {
-  const userId = ctx.state.user;
-
+  const userId = ctx.state.user 
   if (userId) {
     const userExist = await findUserById(userId);
-
     if (!userExist)
       return {
         field: "user",

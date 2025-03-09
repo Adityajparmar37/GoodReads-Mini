@@ -52,10 +52,10 @@ export const validateDescription = (ctx) => {
     };
 
   if (description) {
-    const { success, message } = isValidDescription(description);
+    const { success, message } = isValidDescription(description,10,200);
     if (!success)
       return {
-        field: "description",
+        field: "Book description",
         message,
       };
   }

@@ -31,6 +31,17 @@ import {
   acceptFriendRequst,
   getPendingFriendList,
 } from "./friend.js";
+import {
+  createGroup,
+  removeGroup,
+  getGroup,
+  getGroups,
+  updateGroup,
+  addMember,
+  getMembers,
+  joinGroup,
+} from "./group.js";
+
 
 export {
   registerUser,
@@ -65,4 +76,12 @@ export {
   removeFriend,
   acceptFriendRequst,
   getPendingFriendList,
+  createGroup,
+  removeGroup,
+  getGroup,
+  getGroups,
+  addMember,
+  updateGroup,
+  getMembers,
+  joinGroup,
 };

@@ -1,5 +1,5 @@
 import {
-  isValidShelfName,
+  isValidName,
   isValidDescription,
   isValidateId,
   isbooksExists,
@@ -16,7 +16,7 @@ export const validateShelfName = (ctx) => {
     };
 
   if (shelfName) {
-    const { success, message } = isValidShelfName(shelfName);
+    const { success, message } = isValidName("shelf Name", shelfName, 5, 10);
     if (!success)
       return {
         field: "shelf name",
@@ -39,11 +39,11 @@ export const validateDescription = (ctx) => {
     };
 
   if (description) {
-    const { success, message } = isValidDescription(description);
+    const { success, message } = isValidDescription(description,2,10);
 
     if (!success)
       return {
-        field: "description",
+        field: "Shelf description",
         message,
       };
   }

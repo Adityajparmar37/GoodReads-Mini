@@ -4,14 +4,14 @@ import { isValidTitle } from "./title.js";
 import { isValidBookPages } from "./bookPages.js";
 import { isEmailValid } from "./email.js";
 import { isPasswordValid } from "./password.js";
-import { isNameValid } from "./name.js";
+import { isUserNameValid } from "./userName.js";
 import { isValidToken } from "./token.js";
 import { isValidCoverImage } from "./coverImage.js";
 import { isValidateId } from "./validId.js";
 import { isValidPageLimit } from "./pages.js";
 import { isValidComment } from "./comments.js";
 import { isPlatformValid } from "./platform.js";
-import { isValidShelfName } from "./shelfName.js";
+import { isValidName } from "./checkName.js";
 import { isbooksExists } from "./books.js";
 import { isShelvesExists } from "./shelves.js";
 
@@ -22,14 +22,14 @@ export {
   isValidBookPages,
   isEmailValid,
   isPasswordValid,
-  isNameValid,
+  isUserNameValid,
   isValidToken,
   isValidCoverImage,
   isValidateId,
   isValidPageLimit,
   isValidComment,
   isPlatformValid,
-  isValidShelfName,
+  isValidName,
   isbooksExists,
   isShelvesExists,
 };

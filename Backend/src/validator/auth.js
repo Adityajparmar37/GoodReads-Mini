@@ -1,6 +1,6 @@
 import {
   isEmailValid,
-  isNameValid,
+  isUserNameValid,
   isPasswordValid,
   isValidToken,
 } from "../shared/index.js";
@@ -57,7 +57,7 @@ export const validateLastName = (ctx) => {
       field: "Last name",
       message: "Last name must be provide",
     };
-  } else if (!isNameValid(lastName)) {
+  } else if (!isUserNameValid(lastName)) {
     return {
       field: "Last name",
       message: "Please provide valid last name",
@@ -75,7 +75,7 @@ export const validateFirstName = (ctx) => {
       field: "First name",
       message: "First name must be provide",
     };
-  } else if (!isNameValid(firstName)) {
+  } else if (!isUserNameValid(firstName)) {
     return {
       field: "First name",
       message: "Please provide valid first name",

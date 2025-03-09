@@ -6,6 +6,7 @@ import postRoute from "../routes/post.js";
 import shelfRoute from "../routes/shelf.js";
 import followRoute from "../routes/follow.js";
 import friendRoute from "../routes/friend.js";
+import groupRoute from "../routes/group.js";
 
 const router = new KoaRouter({ prefix: "/api/v1" });
 
@@ -17,9 +18,11 @@ const ROUTERS = [
   shelfRoute,
   followRoute,
   friendRoute,
+  groupRoute,
 ];
 
 ROUTERS.forEach((route) => {
   router.use(route.routes()).use(route.allowedMethods());
 });
 export default router;
+
