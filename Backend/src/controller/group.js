@@ -14,6 +14,8 @@ import { timestamp } from "../utils/timestamp.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { rolePermissions } from "../utils/mapping.js";
 
+// @route   POST/api/v1/group/
+// @desc    create group
 export const createGroup = handleAsync(async (ctx) => {
   const userId = ctx.state.user;
   const groupData = ctx.state.group;
@@ -62,6 +64,8 @@ export const createGroup = handleAsync(async (ctx) => {
       });
 });
 
+// @route   POST/api/v1/group/join
+// @desc    join public group
 export const joinGroup = handleAsync(async (ctx) => {
   const userId = ctx.state.user;
   const groupId = ctx.state?.group?.groupId;
@@ -90,6 +94,8 @@ export const joinGroup = handleAsync(async (ctx) => {
       });
 });
 
+// @route   GET/api/v1/group/:groupId
+// @desc    get a group
 export const getGroup = handleAsync(async (ctx) => {
   const groupId = ctx.state.group?.groupId;
   const result = await findGroupById({ groupId });
@@ -109,6 +115,8 @@ export const getGroup = handleAsync(async (ctx) => {
       });
 });
 
+// @route   GET/api/v1/group/my
+// @desc    get all public groups / private group for user
 export const getGroups = handleAsync(async (ctx) => {
   const userId = ctx.state.user;
   const fetchUserOnly = ctx.path.endsWith("/my");
@@ -153,6 +161,8 @@ export const getGroups = handleAsync(async (ctx) => {
       });
 });
 
+// @route   DELETE/api/v1/group/:groupId
+// @desc    delete a group
 export const removeGroup = handleAsync(async (ctx) => {
   const groupId = ctx.state.group?.groupId;
   const resultGroupRemove = await deleteGroup({ groupId });
@@ -184,6 +194,8 @@ export const removeGroup = handleAsync(async (ctx) => {
       });
 });
 
+// @route   POST/api/v1/group/:groupId
+// @desc    update group
 export const updateGroup = handleAsync(async (ctx) => {
   const updateData = ctx.state?.group;
   const groupId = ctx.state.group?.groupId;
@@ -213,6 +225,8 @@ export const updateGroup = handleAsync(async (ctx) => {
       });
 });
 
+// @route   POST/api/v1/group/inivte
+// @desc    add Member to a group
 export const addMember = handleAsync(async (ctx) => {
   const member = ctx.state.group?.member;
   const groupId = ctx.state.group?.groupId;
@@ -238,6 +252,8 @@ export const addMember = handleAsync(async (ctx) => {
       });
 });
 
+// @route   POST/api/v1/group/members/:groupId
+// @desc    get all members of group
 export const getMembers = handleAsync(async (ctx) => {
   const groupId = ctx.state.group?.groupId;
   const { sortOrder, page, limit } = ctx.state.shared;

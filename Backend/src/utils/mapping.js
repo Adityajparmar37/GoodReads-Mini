@@ -26,6 +26,11 @@ export const platformActionsToDeletePost = Object.freeze({
   1: deleteFacebookPost,
 });
 
+export const messageTypeMapping = Object.freeze({
+  "T": "Text",
+  "P": "Post",
+});
+
 //role's permission mapping
 export const permissionsLists = new Set([
   "canEditGroup",

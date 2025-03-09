@@ -168,3 +168,13 @@ export const isGroupPublic = async (ctx) => {
       message: "Group is not public",
     };
 };
+
+export const isNotMember = async (ctx) => {
+  const memberId = ctx.state.user;
+  const userExist = await findUserById(memberId);
+  if (!userExist)
+    return {
+      field: "Member",
+      message: "Member user does not exist",
+    };
+};

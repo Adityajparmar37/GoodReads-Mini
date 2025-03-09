@@ -42,6 +42,7 @@ import {
   joinGroup,
 } from "./group.js";
 
+import { chat } from "./chat.js";
 
 export {
   registerUser,
@@ -84,4 +85,5 @@ export {
   updateGroup,
   getMembers,
   joinGroup,
+  chat,
 };

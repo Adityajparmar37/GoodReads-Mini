@@ -1,9 +1,9 @@
-import app from "./app.js";
+import { server } from "./app.js";
 import { connectDb, PORT } from "./src/config/index.js";
 
 connectDb()
   .then(() => {
-    app.listen(PORT, (err) => {
+    server.listen(PORT, (err) => {
       //print error in slack
       if (err) console.error("App error ", err);
       console.log(`App listen on ${PORT}`);
