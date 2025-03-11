@@ -16,6 +16,11 @@ export const friendStatus = Object.freeze({
   accepted: 1,
 });
 
+export const reversePlatformMapping = Object.freeze({
+  1: "Facebook",
+  2: "Instagram",
+});
+
 //Social Media Service Mapping
 export const platformActionsToCreatePost = Object.freeze({
   1: postToFacebook,
@@ -27,8 +32,8 @@ export const platformActionsToDeletePost = Object.freeze({
 });
 
 export const messageTypeMapping = Object.freeze({
-  "T": "Text",
-  "P": "Post",
+  T: "Text",
+  P: "Post",
 });
 
 //role's permission mapping

@@ -8,6 +8,7 @@ import followRoute from "../routes/follow.js";
 import friendRoute from "../routes/friend.js";
 import groupRoute from "../routes/group.js";
 import chatRoute from "../routes/chat.js";
+import reviewCommentsLikesRoute from "../routes/reviewCommentsLikes.js";
 
 const router = new KoaRouter({ prefix: "/api/v1" });
 
@@ -21,6 +22,7 @@ const ROUTERS = [
   friendRoute,
   groupRoute,
   chatRoute,
+  reviewCommentsLikesRoute,
 ];
 
 ROUTERS.forEach((route) => {

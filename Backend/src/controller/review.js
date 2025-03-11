@@ -1,4 +1,10 @@
+import Bluebird from "bluebird";
 import { handleAsync } from "../middleware/handleAsync.js";
+import { decrementBookReviewCount } from "../query/books.js";
+import {
+  deleteReviewAllComments,
+  deleteReviewAllLikes,
+} from "../query/reviewCommentsLikes.js";
 import {
   deleteReview,
   findReviews,
@@ -17,19 +23,28 @@ export const addReview = handleAsync(async (ctx) => {
   const { bookId } = ctx.state.book;
   const userId = ctx.state.user;
 
-  const result = await insertReview({
+  const resultInsertingRerview = await insertReview({
     ...reviewData,
     reviewId: createId(),
     bookId,
     userId,
-    isLiked: reviewData.isLiked ?? false,
     stars: reviewData.stars ?? 0,
     createdAt: timestamp(),
     updateAt: timestamp(),
   });
+
+  if (!resultInsertingRerview.acknowledged) {
+    sendResponse(ctx, 400, {
+      response: {
+        success: false,
+        message: "Review not added, please try again",
+      },
+    });
+    return;
+  }
   const ratingResult = await updateBookAvgRating({ bookId });
 
-  result.acknowledged && ratingResult.acknowledged
+  ratingResult.acknowledged
     ? sendResponse(ctx, 200, {
         response: {
           success: true,
@@ -45,7 +60,6 @@ export const addReview = handleAsync(async (ctx) => {
 });
 
 // @route   GET/api/v1/reviews/bookID
-// @route   GET/api/v1/reviews/
 // @desc    get reviews
 export const getReviews = handleAsync(async (ctx) => {
   const bookId = ctx.state.book;
@@ -105,10 +119,32 @@ export const updateReview = handleAsync(async (ctx) => {
 // @route   DELETE/api/v1/reviews/
 // @desc    delete review
 export const removeReview = handleAsync(async (ctx) => {
-  const reviewId = ctx.state.shared;
-  const result = await deleteReview(reviewId);
+  const reviewId = ctx.state.reviews?.reviewId;
+  const bookId = ctx.state?.book?.bookId;
+  // const result = await deleteReview({ reviewId });
 
-  if (!result.acknowledged) {
+  const deleteOperations = [
+    () => deleteReview({ reviewId }),
+    () => decrementBookReviewCount({ bookId }),
+    () => deleteReviewAllComments({ reviewId }),
+    () => deleteReviewAllLikes(reviewId),
+  ];
+
+  const results = await Bluebird.mapSeries(deleteOperations, (queries) =>
+    queries()
+  );
+
+  const [
+    resultReviewRemove,
+    resultDecrementBookReviewCount,
+    resultReviewAllComments,
+  ] = results;
+
+  if (
+    !resultReviewRemove.acknowledged ||
+    !resultDecrementBookReviewCount.acknowledged ||
+    !resultReviewAllComments.acknowledged
+  ) {
     sendResponse(ctx, 400, {
       response: {
         success: false,
@@ -118,7 +154,8 @@ export const removeReview = handleAsync(async (ctx) => {
     return;
   }
 
-  result.deletedCount > 0
+  resultReviewRemove.deletedCount > 0 &&
+  resultDecrementBookReviewCount.modifiedCount > 0
     ? sendResponse(ctx, 200, {
         response: {
           success: true,

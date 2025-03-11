@@ -26,7 +26,7 @@ export const auth = async (ctx, next) => {
       },
     });
 
-  if (!userExist.isVerified)
+  if (userExist && !userExist.isVerified)
     return sendResponse(ctx, 400, {
       response: {
         success: false,

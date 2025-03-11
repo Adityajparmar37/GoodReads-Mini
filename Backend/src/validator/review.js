@@ -1,19 +1,6 @@
+import { findOneBook } from "../query/books.js";
 import { findOneReview } from "../query/review.js";
 import { isValidateId, isValidComment } from "../shared/index.js";
-
-export const validateLiked = (ctx) => {
-  const isLiked = ctx.request.body.isLiked;
-  if (isLiked !== undefined && typeof isLiked !== "boolean")
-    return {
-      field: "book like",
-      message: "Please provide valid book like",
-    };
-
-  ctx.state.reviews = {
-    ...ctx.state.reviews,
-    ...(isLiked !== undefined ? { isLiked } : {}),
-  };
-};
 
 export const validateStars = (ctx) => {
   const stars = ctx.request.body.stars;
@@ -29,26 +16,26 @@ export const validateStars = (ctx) => {
   };
 };
 
-export const validComments = (ctx) => {
-  const comment = ctx.request.body.comment;
+export const validReview = (ctx) => {
+  const review = ctx.request.body.review;
 
-  if (comment) {
-    const { success, message } = isValidComment(comment);
+  if (review) {
+    const { success, message } = isValidComment(review);
 
     if (!success)
       return {
-        field: "book comments",
+        field: "book review",
         message,
       };
   }
   ctx.state.reviews = {
     ...ctx.state.reviews,
-    ...(comment ? { comment } : {}),
+    ...(review ? { review } : {}),
   };
 };
 
 export const validateReviewId = (ctx) => {
-  const reviewId = ctx.params.reviewId;
+  const reviewId = ctx.params.reviewId || ctx.request.body?.reviewId;
 
   if (!reviewId)
     return {
@@ -70,9 +57,10 @@ export const validateReviewId = (ctx) => {
 
 export const isReviewExist = async (ctx) => {
   const reviewId = ctx?.state?.reviews?.reviewId;
+  let result;
 
   if (reviewId) {
-    const result = await findOneReview({ reviewId });
+    result = await findOneReview({ reviewId });
 
     if (!result) {
       return {
@@ -81,4 +69,30 @@ export const isReviewExist = async (ctx) => {
       };
     }
   }
+  if (reviewId) {
+    ctx.state.book = {
+      ...ctx.state.book,
+      ...(result.bookId ? { bookId: result.bookId } : {}),
+    };
+  }
+};
+
+export const isPlubisherReview = async (ctx) => {
+  const userId = ctx.state.user;
+  const bookId = ctx?.state?.book?.bookId;
+  const bookDetails = await findOneBook({ bookId });
+
+  if (userId === bookDetails.publishedBy)
+    return {
+      field: "Review",
+      message: "Plubisher cannot add review",
+    };
+
+  const reviewDetails = await findOneReview({ userId, bookId });
+
+  if (reviewDetails)
+    return {
+      field: "Review",
+      message: "Review already exist, ",
+    };
 };

@@ -13,6 +13,7 @@ import {
   platformActionsToCreatePost,
   platformActionsToDeletePost,
 } from "../utils/mapping.js";
+import { timestamp } from "../utils/timestamp.js";
 
 // @route   POST/api/v1/posts/
 // @desc    publish post on specified social Media
@@ -22,15 +23,20 @@ export const postBook = handleAsync(async (ctx) => {
   const bookId = ctx.state.book;
   const bookDetails = await findOneBook(bookId);
 
+  const postData = {
+    message: `📔 Title: ${bookDetails.title}\u000A\u000A 📃 About: ${bookDetails.description}\u000A\u000A\u000A ✒️ Author: ${bookDetails.author}\u000A\u000A\u000A ⭐ Rating: ${bookDetails.averageRating}`,
+    url: bookDetails.coverImage,
+  };
+
   // run platform service by mapping its object
   const postResults = await Bluebird.mapSeries(platforms, async (platform) =>
-    platformActionsToCreatePost[platform](ctx, bookDetails)
+    platformActionsToCreatePost[platform](ctx, postData)
   );
 
   const successfullPosts = postResults.filter((post) => post.success);
   const failedMessage = postResults
     .filter((post) => !post.success)
-    .map((failed) => `${failed.platform}, on ${failed.message}`);
+    .map((failed) => `${failed.platform}, ${failed.message}`);
 
   if (successfullPosts.length === 0) {
     sendResponse(ctx, 400, {
@@ -95,7 +101,7 @@ export const getPosts = handleAsync(async (ctx) => {
 });
 
 // @route   DELETE/api/v1/posts/
-// @desc
+// @desc    delete the post
 export const deleteBookPost = handleAsync(async (ctx) => {
   const sharedId = ctx.state.shared.shareId;
   const findPost = await findPostById(sharedId);
@@ -105,6 +111,8 @@ export const deleteBookPost = handleAsync(async (ctx) => {
       success: false,
       message: "Cannot find the post",
     };
+  
+  //get delete service of social platform
   const postDeleteResult = await platformActionsToDeletePost[findPost.platform](
     ctx,
     findPost.postId

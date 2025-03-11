@@ -18,7 +18,15 @@ const io = new Server(server, {
 
 // Global error handler middleware
 app.use(errorHandler);
-app.use(bodyParser());
+
+app.use(
+  bodyParser({
+    onerror(err) {
+      err.message = "Please provide a valid JSON body";
+      throw err;
+    },
+  })
+);
 
 // logger
 app.use(async (ctx, next) => {

@@ -10,3 +10,4 @@
 8. Friend Module (CRUD on friend, sorting + pagination on friend lists) done
 9. Group Module (CRUD , invite user , join public group, assign role and permissions, get members + searching, sorting, paginaiton) done
 10. Chat Module (chatting in group by socket)
+11. Review's comment and Like (CRUD + sorting) done

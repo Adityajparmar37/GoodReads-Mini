@@ -3,11 +3,11 @@ import { auth } from "../middleware/auth.js";
 import { validator } from "../middleware/validator.js";
 import { isBookValid, validateBookId } from "../validator/book.js";
 import {
-  validComments,
-  validateLiked,
+  validReview,
   validateStars,
   validateReviewId,
   isReviewExist,
+  isPlubisherReview,
 } from "../validator/review.js";
 import {
   removeReview,
@@ -26,8 +26,8 @@ route.post(
     isBodyEmpty,
     validateBookId,
     isBookValid,
-    validComments,
-    validateLiked,
+    isPlubisherReview,
+    validReview,
     validateStars,
   ]),
   addReview
@@ -39,7 +39,7 @@ route.get(
   validator([validateBookId, isBookValid]),
   getReviews
 );
-route.get("/user", auth, getReviews); 
+route.get("/user", auth, getReviews);
 
 route.patch(
   "/:reviewId",
@@ -48,8 +48,7 @@ route.patch(
     isBodyEmpty,
     validateReviewId,
     isReviewExist,
-    validComments,
-    validateLiked,
+    validReview,
     validateStars,
   ]),
   updateReview

@@ -1,6 +1,5 @@
 import { insertMessage } from "../query/chat.js";
 import { createId } from "../utils/createId.js";
-import { encrypt } from "../utils/crypto.js";
 import { timestamp } from "../utils/timestamp.js";
 
 export const messageService = (io, oldMessages = []) => {

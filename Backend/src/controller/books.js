@@ -10,6 +10,7 @@ import { deleteReviews } from "../query/review.js";
 import { createId } from "../utils/createId.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { timestamp } from "../utils/timestamp.js";
+import Bluebird from "bluebird";
 
 // @route   POST /api/v1/books/
 // @desc    add book
@@ -129,14 +130,22 @@ export const updateBook = handleAsync(async (ctx) => {
 // @desc    delete book
 export const removeBook = handleAsync(async (ctx) => {
   const bookId = ctx.state.book;
-  const bookDeleteResult = await deleteBook(bookId);
-  const reviewDeleteResult = await deleteReviews(bookId);
-  const removeBookFromShelfResult = await deleteBookFromShelf(bookId);
+
+  const deleteOperations = [
+    () => deleteBook(bookId),
+    () => deleteReviews(bookId),
+    () => deleteBookFromShelf(bookId),
+  ];
+  const results = await Bluebird.mapSeries(deleteOperations, (queries) =>
+    queries()
+  );
+  const [bookDeleteResult, reviewDeleteResult, removeBookFromShelfResult] =
+    results;
 
   if (
-    !bookDeleteResult.acknowledged ||
-    !reviewDeleteResult.acknowledged ||
-    !removeBookFromShelfResult.acknowledged
+    bookDeleteResult.acknowledged ||
+    reviewDeleteResult.acknowledged ||
+    removeBookFromShelfResult.acknowledged
   ) {
     sendResponse(ctx, 400, {
       response: {

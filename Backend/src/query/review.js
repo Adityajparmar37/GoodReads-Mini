@@ -26,20 +26,37 @@ export const deleteReviews = (bookId) =>
 export const updateBookAvgRating = async (bookId) => {
   const calculateAvgRating = await client
     .db(DATABASE)
-    .collection(reviews)
+    .collection("reviews")
     .aggregate([
-      { $group: { _id: "$bookId", avgRating: { $avg: "$stars" } } },
-      { $project: { _id: 0, avgRating: { $round: ["$avgRating", 2] } } },
+      {
+        $group: {
+          _id: null,
+          avgRating: { $avg: "$stars" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          avgRating: { $round: ["$avgRating", 2] },
+          count: 1,
+        },
+      },
     ])
     .toArray();
 
+  // Get the average rating and count from aggregation result
   const avgRating =
     calculateAvgRating.length > 0 ? calculateAvgRating[0].avgRating : 0;
+  const reviewCount =
+    calculateAvgRating.length > 0 ? calculateAvgRating[0].count : 0;
 
   const result = await client
     .db(DATABASE)
     .collection(books)
-    .updateOne({ bookId }, { $set: { averageRating: avgRating } });
+    .updateOne(bookId, {
+      $set: { averageRating: avgRating, bookReviewCount: reviewCount },
+    });
 
   return result;
 };

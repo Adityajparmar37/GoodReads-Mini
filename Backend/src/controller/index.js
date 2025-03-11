@@ -41,6 +41,14 @@ import {
   getMembers,
   joinGroup,
 } from "./group.js";
+import {
+  addReviewComment,
+  getReviewComments,
+  removeReviewComment,
+  updateReviewComment,
+  likeReview,
+  getReviewLikes,
+} from "./reviewCommentsLikes.js";
 
 import { chat } from "./chat.js";
 
@@ -86,4 +94,10 @@ export {
   getMembers,
   joinGroup,
   chat,
+  addReviewComment,
+  removeReviewComment,
+  updateReviewComment,
+  getReviewComments,
+  likeReview,
+  getReviewLikes,
 };

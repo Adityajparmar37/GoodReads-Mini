@@ -11,7 +11,7 @@ export const isValidDescription = (description,min,max) => {
   if (words.length <= min || words.length > max)
     return {
       success: false,
-      message: "Minimum words at least 5 and Maximum words at max 200",
+      message: `Minimum words at least ${min} and Maximum words at max ${max}`,
     };
 
   if (trimmedDescription.split(/\s+/).every((word) => /^\d+$/.test(word)))

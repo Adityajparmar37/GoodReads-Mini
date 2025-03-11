@@ -12,23 +12,81 @@ export const removeFollower = (filter) =>
 
 export const updateFollower = (filter, updateQuery) =>
   client.db(DATABASE).collection(follow).updateOne(filter, updateQuery);
-
+  
 export const findFollowing = (userId, sortOrder, page, limit) =>
   client
     .db(DATABASE)
     .collection(follow)
-    .find({ followeeId: userId }, { projection: { userName: 1, _id: 0 } })
-    .sort({ createdAt: sortOrder })
-    .skip((page - 1) * limit)
-    .limit(limit)
+    .aggregate([
+      {
+        $match: { followeeId: userId },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "followingId",
+          foreignField: "userId",
+          as: "followingUser",
+        },
+      },
+      {
+        $unwind: "$followingUser",
+      },
+      {
+        $project: {
+          _id: 0,
+          userName: {
+            $concat: ["$followerUser.firstName", " ", "$followerUser.lastName"],
+          },
+        },
+      },
+      {
+        $sort: { createdAt: sortOrder },
+      },
+      {
+        $skip: (page - 1) * limit,
+      },
+      {
+        $limit: limit,
+      },
+    ])
     .toArray();
 
 export const findFollowers = (userId, sortOrder, page, limit) =>
   client
     .db(DATABASE)
     .collection(follow)
-    .find({ followingId: userId }, { projection: { userName: 1, _id: 0 } })
-    .sort({ createdAt: sortOrder })
-    .skip((page - 1) * limit)
-    .limit(limit)
+    .aggregate([
+      {
+        $match: { followingId: userId },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "followeeId",
+          foreignField: "userId",
+          as: "followerUser",
+        },
+      },
+      {
+        $unwind: "$followerUser",
+      },
+      {
+        $project: {
+          _id: 0,
+          userName: {
+            $concat: ["$followerUser.firstName", " ", "$followerUser.lastName"],
+          },
+        },
+      },
+      {
+        $sort: { createdAt: sortOrder },
+      },
+      {
+        $skip: (page - 1) * limit,
+      },
+      {
+        $limit: limit,
+      },
+    ])
     .toArray();

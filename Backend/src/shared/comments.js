@@ -8,7 +8,7 @@ export const isValidComment = (comment) => {
   const trimmedComment = comment.trim();
   const words = trimmedComment.split(/\s+/);
 
-  if (words.length <= 2 || words.length > 100)
+  if (words.length <= 1 || words.length > 100)
     return {
       success: false,
       message: "Minimum words atlead 2 and Maximum words atmax 100",

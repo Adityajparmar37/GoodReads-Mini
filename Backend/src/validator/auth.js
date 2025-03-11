@@ -159,7 +159,7 @@ export const validateToken = (ctx) => {
 export const isUserVerified = async (ctx) => {
   const { email } = ctx?.state.user;
   const userData = await findUser(email);
-  if (!userData?.isVerified) {
+  if (userData && !userData?.isVerified) {
     return {
       field: "verify user failed",
       message: "User not veried, please register again",

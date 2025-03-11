@@ -3,6 +3,10 @@ const chatMessages = "chat_mesages";
 
 export const insertMessage = (messageData) =>
   client.db(DATABASE).collection(chatMessages).insertOne(messageData);
+
+export const deleteAllGroupChat = (filter) =>
+  client.db(DATABASE).collection(chatMessages).deleteMany(filter);
+
 export const getMessages = (groupId) =>
   client
     .db(DATABASE)

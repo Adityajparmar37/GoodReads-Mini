@@ -41,7 +41,7 @@ export const checkAccess = (roles) => async (ctx, next) => {
   if (groupId) query.groupId = groupId;
   const userData = await findMemberById(query);
 
-  if (!userData) ctx.throw(404, "User not found");
+  if (!userData) ctx.throw(404, "User is not a member of group");
 
   if (!roles.includes(userData.role)) {
     ctx.throw(403, "Access denied, role not authorized");

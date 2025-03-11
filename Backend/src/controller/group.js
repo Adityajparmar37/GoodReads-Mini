@@ -13,6 +13,8 @@ import { createId } from "../utils/createId.js";
 import { timestamp } from "../utils/timestamp.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { rolePermissions } from "../utils/mapping.js";
+import { deleteAllGroupChat } from "../query/chat.js";
+import Bluebird from "bluebird";
 
 // @route   POST/api/v1/group/
 // @desc    create group
@@ -165,9 +167,24 @@ export const getGroups = handleAsync(async (ctx) => {
 // @desc    delete a group
 export const removeGroup = handleAsync(async (ctx) => {
   const groupId = ctx.state.group?.groupId;
-  const resultGroupRemove = await deleteGroup({ groupId });
 
-  if (!resultGroupRemove.acknowledged) {
+  const deleteOperations = [
+    () => deleteGroup({ groupId }),
+    () => deleteMembers({ groupId }),
+    () => deleteAllGroupChat({ groupId }),
+  ];
+
+  const results = await Bluebird.mapSeries(deleteOperations, (queries) =>
+    queries()
+  );
+  const [resultGroupRemove, resultMemberRemove, resultGroupChatRemove] =
+    results;
+
+  if (
+    !resultGroupRemove.acknowledged ||
+    !resultMemberRemove.acknowledged ||
+    !resultGroupChatRemove.acknowledged
+  ) {
     sendResponse(ctx, 400, {
       response: {
         success: false,
@@ -177,9 +194,7 @@ export const removeGroup = handleAsync(async (ctx) => {
     return;
   }
 
-  const result = await deleteMembers({ groupId });
-
-  result.deletedCount > 0
+  resultGroupRemove.deletedCount > 0
     ? sendResponse(ctx, 200, {
         response: {
           success: true,

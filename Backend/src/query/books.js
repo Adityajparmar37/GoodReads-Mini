@@ -50,7 +50,7 @@ export const findBooks = async (
 
   return await client
     .db(DATABASE)
-    .collection("books")
+    .collection(books)
     .aggregate(pipeline)
     .toArray();
 };
@@ -60,3 +60,15 @@ export const updateBookById = (bookId, updateQuery) =>
 
 export const deleteBook = (bookId) =>
   client.db(DATABASE).collection(books).deleteOne(bookId);
+
+export const incrementBookReviewCount = (bookId) =>
+  client
+    .db(DATABASE)
+    .collection(books)
+    .updateOne(bookId, { $inc: { bookReviewCount: 1 } });
+
+export const decrementBookReviewCount = (bookId) =>
+  client
+    .db(DATABASE)
+    .collection(books)
+    .updateOne(bookId, { $inc: { bookReviewCount: -1 } });

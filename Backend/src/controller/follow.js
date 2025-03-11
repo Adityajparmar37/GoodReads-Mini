@@ -18,8 +18,8 @@ import { timestamp } from "../utils/timestamp.js";
 // @desc    follow other user
 export const followUser = handleAsync(async (ctx) => {
   const followeeId = ctx.state.user;
-  const { followingId, userName } = ctx.state.follow;
-  
+  const { followingId } = ctx.state.follow;
+
   const incrementFollowers = await incrementFollowingCount({
     userId: followeeId,
   });
@@ -29,7 +29,6 @@ export const followUser = handleAsync(async (ctx) => {
   });
 
   const result = await insertFollower({
-    userName,
     followeeId,
     followingId,
     createdAt: timestamp(),
