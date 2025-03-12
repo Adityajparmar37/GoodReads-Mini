@@ -14,10 +14,18 @@ import {
   addReview,
   updateReview,
   getReviews,
+  generateReview,
 } from "../controller/index.js";
-import { isBodyEmpty } from "../validator/common.js";
+import { isBodyEmpty, validatePrompt } from "../validator/common.js";
 
 const route = new Router({ prefix: "/reviews" });
+
+route.post(
+  "/generate",
+  auth,
+  validator([isBodyEmpty, validateBookId, isBookValid, validatePrompt]),
+  generateReview
+);
 
 route.post(
   "/:bookId",

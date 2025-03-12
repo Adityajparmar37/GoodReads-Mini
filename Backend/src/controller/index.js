@@ -6,7 +6,13 @@ import {
   getBooks,
   getBook,
 } from "./books.js";
-import { addReview, removeReview, updateReview, getReviews } from "./review.js";
+import {
+  addReview,
+  removeReview,
+  updateReview,
+  getReviews,
+  generateReview,
+} from "./review.js";
 import { postBook, deleteBookPost, getPosts } from "./post.js";
 import {
   createShelf,
@@ -100,4 +106,5 @@ export {
   getReviewComments,
   likeReview,
   getReviewLikes,
+  generateReview,
 };

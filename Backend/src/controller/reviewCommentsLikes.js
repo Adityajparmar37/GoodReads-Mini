@@ -164,7 +164,6 @@ export const likeReview = handleAsync(async (ctx) => {
 // @desc    get likes of review
 export const getReviewLikes = handleAsync(async (ctx) => {
   const reviewId = ctx.state.reviews?.reviewId;
-  console.log(reviewId);
   const result = await findReviewLike(reviewId);
 
   result

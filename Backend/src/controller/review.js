@@ -1,6 +1,6 @@
 import Bluebird from "bluebird";
 import { handleAsync } from "../middleware/handleAsync.js";
-import { decrementBookReviewCount } from "../query/books.js";
+import { decrementBookReviewCount, findOneBook } from "../query/books.js";
 import {
   deleteReviewAllComments,
   deleteReviewAllLikes,
@@ -15,6 +15,8 @@ import {
 import { createId } from "../utils/createId.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { timestamp } from "../utils/timestamp.js";
+import { createUserInput } from "../utils/promptWrapper.js";
+import { geminiService } from "../services/geminiAI.js";
 
 // @route   POST/api/v1/reviews/
 // @desc    add review
@@ -121,7 +123,6 @@ export const updateReview = handleAsync(async (ctx) => {
 export const removeReview = handleAsync(async (ctx) => {
   const reviewId = ctx.state.reviews?.reviewId;
   const bookId = ctx.state?.book?.bookId;
-  // const result = await deleteReview({ reviewId });
 
   const deleteOperations = [
     () => deleteReview({ reviewId }),
@@ -166,6 +167,40 @@ export const removeReview = handleAsync(async (ctx) => {
         response: {
           success: false,
           message: "Review already remove",
+        },
+      });
+});
+
+// @route   POST/api/v1/reviews/generate
+// @desc    generate AI review
+export const generateReview = handleAsync(async (ctx) => {
+  const bookId = ctx.state?.book?.bookId;
+  const userPrompt = ctx.state.shared?.prompt ?? "";
+  const { title, description, author, genres } = await findOneBook({ bookId });
+  
+  // Reformat the prompt based on specified requirements
+  const inputPrompt = createUserInput(
+    userPrompt,
+    title,
+    description,
+    author,
+    genres
+  );
+  const generatedReviewResult = await geminiService(inputPrompt);
+
+  console.log(generatedReviewResult);
+
+  generatedReviewResult
+    ? sendResponse(ctx, 200, {
+        success: true,
+        response: {
+          data: generatedReviewResult,
+        },
+      })
+    : sendResponse(ctx, 400, {
+        success: false,
+        response: {
+          message: "Review not generated, please try again",
         },
       });
 });

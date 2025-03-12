@@ -78,3 +78,39 @@ export const IsUserExist = async (ctx) => {
       };
   }
 };
+
+export const validatePrompt = (ctx) => {
+  const prompt = ctx.request.body?.prompt;
+
+  if (prompt) {
+    const trimmedprompt = prompt.trim();
+
+    if (typeof trimmedprompt !== "string")
+      return {
+        field: "Prompt",
+        message: `Please provide valid prompt`,
+      };
+
+    const words = trimmedprompt.split(/\s+/);
+    if (words.length < 2 || words.length > 10)
+      return {
+        field: "Prompt words",
+        message: `prompt should of 2 minimum length and 10  maximum length`,
+      };
+
+    //if prompt contain any script inject
+    if (
+      /<script|javascript:|exec\(|eval\(|setTimeout\(|document\.cookie/i.test(
+        trimmedprompt
+      )
+    )
+      return {
+        field: "Prompt",
+        message: "Prompt contain harmful contain",
+      };
+  }
+  ctx.state.shared = {
+    ...ctx.state.shared,
+    ...(prompt ? { prompt } : {}),
+  };
+};
