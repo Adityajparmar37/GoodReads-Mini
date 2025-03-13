@@ -20,7 +20,7 @@ export const validReviewComment = (ctx) => {
 };
 
 export const isCommentIdValid = (ctx) => {
-  const commentId = ctx.params.commentId;
+  const commentId = ctx.params.commentId || ctx.request.body?.mainCommentId;
 
   if (!isValidateId(commentId))
     return {
@@ -36,13 +36,16 @@ export const isCommentIdValid = (ctx) => {
 
 export const isCommentExist = async (ctx) => {
   const commentId = ctx.state.reviewComment?.commentId;
-  const commentExist = await findCommentById({ commentId });
 
-  if (!commentExist)
-    return {
-      field: "Review Comment",
-      message: "Review not found",
-    };
+  if (commentId) {
+    const commentExist = await findCommentById({ commentId });
+
+    if (!commentExist)
+      return {
+        field: "Review Comment",
+        message: "Comment not found",
+      };
+  }
 };
 
 export const validateLike = (ctx) => {

@@ -15,8 +15,8 @@ import {
 import { createId } from "../utils/createId.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { timestamp } from "../utils/timestamp.js";
-import { createUserInput } from "../utils/promptWrapper.js";
-import { geminiService } from "../services/geminiAI.js";
+import { createUserInputForBookReview } from "../utils/promptWrapper.js";
+import { geminiServiceReview } from "../services/geminiAI.js";
 
 // @route   POST/api/v1/reviews/
 // @desc    add review
@@ -177,30 +177,27 @@ export const generateReview = handleAsync(async (ctx) => {
   const bookId = ctx.state?.book?.bookId;
   const userPrompt = ctx.state.shared?.prompt ?? "";
   const { title, description, author, genres } = await findOneBook({ bookId });
-  
+
   // Reformat the prompt based on specified requirements
-  const inputPrompt = createUserInput(
+  const inputPrompt = createUserInputForBookReview(
     userPrompt,
     title,
-    description,
     author,
-    genres
+    genres,
+    description
   );
-  const generatedReviewResult = await geminiService(inputPrompt);
-
-  console.log(generatedReviewResult);
-
-  generatedReviewResult
+  const generatedReviewResult = await geminiServiceReview(inputPrompt);
+  generatedReviewResult.success
     ? sendResponse(ctx, 200, {
-        success: true,
         response: {
-          data: generatedReviewResult,
+          success: true,
+          data: generatedReviewResult.message,
         },
       })
     : sendResponse(ctx, 400, {
-        success: false,
         response: {
-          message: "Review not generated, please try again",
+          success: false,
+          message: generatedReviewResult.message,
         },
       });
 });

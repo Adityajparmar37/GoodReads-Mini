@@ -12,3 +12,4 @@
 10. Chat Module (chatting in group by socket)
 11. Review's comment and Like (CRUD + sorting) done
 12. Auto-Generating review based on user's review or directly based on book details without user's review
+13. Nested Comment added (UPTO 1 level) (CRUD + sorting) done

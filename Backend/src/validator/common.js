@@ -92,10 +92,10 @@ export const validatePrompt = (ctx) => {
       };
 
     const words = trimmedprompt.split(/\s+/);
-    if (words.length < 2 || words.length > 10)
+    if (words.length < 2 || words.length > 100)
       return {
         field: "Prompt words",
-        message: `prompt should of 2 minimum length and 10  maximum length`,
+        message: `prompt should of 2 minimum length and 100  maximum length`,
       };
 
     //if prompt contain any script inject

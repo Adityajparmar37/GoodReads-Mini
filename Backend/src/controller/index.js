@@ -55,6 +55,14 @@ import {
   likeReview,
   getReviewLikes,
 } from "./reviewCommentsLikes.js";
+import {
+  addNestedComment,
+  getNestedComments,
+  removeNestedComment,
+  getNestedCommentsLikes,
+  likeNestedComments,
+  updateNestedComment
+} from "./nestedCommentsLikes.js";
 
 import { chat } from "./chat.js";
 
@@ -107,4 +115,10 @@ export {
   likeReview,
   getReviewLikes,
   generateReview,
+  addNestedComment,
+  getNestedComments,
+  removeNestedComment,
+  getNestedCommentsLikes,
+  likeNestedComments,
+  updateNestedComment,
 };
