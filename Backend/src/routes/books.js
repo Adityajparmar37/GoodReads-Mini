@@ -20,14 +20,20 @@ import {
   getBooks,
   getBook,
 } from "../controller/index.js";
-import { isBodyEmpty, validatepage, validateSearchTerm, validateSortOrder } from "../validator/common.js";
-
+import {
+  isBodyEmpty,
+  validatepage,
+  validateSearchTerm,
+  validateSortOrder,
+} from "../validator/common.js";
+import { featureActivationStatus } from "../middleware/featureActivationStatus.js";
 
 const route = new Router({ prefix: "/books" });
 
 route.post(
   "/",
   auth,
+  featureActivationStatus("publishBook"),
   validator([
     isAllowPublish,
     isBodyEmpty,

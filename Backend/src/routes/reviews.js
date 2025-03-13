@@ -17,12 +17,14 @@ import {
   generateReview,
 } from "../controller/index.js";
 import { isBodyEmpty, validatePrompt } from "../validator/common.js";
+import { featureActivationStatus } from "../middleware/featureActivationStatus.js";
 
 const route = new Router({ prefix: "/reviews" });
 
 route.post(
   "/generate",
   auth,
+  featureActivationStatus("AIreview"),
   validator([isBodyEmpty, validateBookId, isBookValid, validatePrompt]),
   generateReview
 );

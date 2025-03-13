@@ -1,3 +1,4 @@
+import Bluebird from "bluebird";
 import { handleAsync } from "../middleware/handleAsync.js";
 import {
   deleteReviewComment,
@@ -46,9 +47,17 @@ export const addReviewComment = handleAsync(async (ctx) => {
 // @desc    remove comments on review
 export const removeReviewComment = handleAsync(async (ctx) => {
   const commentId = ctx.state.reviewComment;
-  const result = await deleteReviewComment(commentId);
+  const deleteOperation = [
+    () => deleteReviewComment(commentId),
+    () => deleteNestedComment({ mainCommentId: commentId }),
+  ];
+  const result = await Bluebird.mapSeries(deleteOperation, (queries) =>
+    queries()
+  );
 
-  result.deletedCount > 0
+  const [reviewCommentRemove, nestedCommentRemove] = result;
+
+  reviewCommentRemove.deletedCount > 0 && nestedCommentRemove.acknowledged
     ? sendResponse(ctx, 200, {
         response: {
           success: true,
