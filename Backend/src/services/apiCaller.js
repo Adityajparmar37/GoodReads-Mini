@@ -15,14 +15,16 @@ export const apiCaller = async (
   method,
   baseUrl,
   data = null,
-  query = null
+  query = null,
+  headers = null
 ) =>
   await axios({
     method,
     url: baseUrl,
     data,
     params: query,
-  }).catch((error) => { 
+    headers,
+  }).catch((error) => {
     //print it in slack
     console.log(`API Call Error: ${error}`);
     ctx.throw(

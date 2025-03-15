@@ -19,6 +19,7 @@ import {
   updateBook,
   getBooks,
   getBook,
+  vectorSearchBookGenres,
 } from "../controller/index.js";
 import {
   isBodyEmpty,
@@ -53,6 +54,13 @@ route.get(
   auth,
   validator([validatepage, validateSortOrder, validateSearchTerm]),
   getBooks
+);
+
+route.get(
+  "/vectorSearch",
+  auth,
+  validator([validateSearchTerm]),
+  vectorSearchBookGenres
 );
 
 route.get("/:bookId", auth, validator([validateBookId, isBookValid]), getBook);

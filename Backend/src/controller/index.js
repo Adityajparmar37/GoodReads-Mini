@@ -6,6 +6,7 @@ import {
   updateBook,
   getBooks,
   getBook,
+  vectorSearchBookGenres,
 } from "./books.js";
 
 import {
@@ -130,4 +131,5 @@ export {
   getNestedCommentsLikes,
   likeNestedComments,
   updateNestedComment,
+  vectorSearchBookGenres,
 };

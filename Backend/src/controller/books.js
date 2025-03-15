@@ -5,12 +5,14 @@ import {
   updateBookById,
   findBooks,
   findOneBook,
+  findSimilarGenresBooks,
 } from "../query/books.js";
 import { deleteReviews } from "../query/review.js";
 import { createId } from "../utils/createId.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { timestamp } from "../utils/timestamp.js";
 import Bluebird from "bluebird";
+import { getEmbedding } from "../utils/getEmbedding.js";
 
 // @route   POST /api/v1/books/
 // @desc    add book
@@ -23,6 +25,7 @@ export const createBook = handleAsync(async (ctx) => {
     bookId: createId(),
     averageRating: 0,
     publishedBy,
+    bookReviewCount: 0,
     createdAt: timestamp(),
     updatedAt: timestamp(),
   });
@@ -171,4 +174,42 @@ export const removeBook = handleAsync(async (ctx) => {
       });
 
   return;
+});
+
+// @route   GET/api/v1/books/vectorSearch
+// @desc    find book with similar genres using vector search
+export const vectorSearchBookGenres = handleAsync(async (ctx) => {
+  const searchQuery = ctx.state.shared.searchTerm;
+  const searchQueryEmbedding = await getEmbedding(ctx, searchQuery);
+  console.log("sqe", searchQueryEmbedding);
+
+  if (!searchQueryEmbedding) {
+    sendResponse(ctx, 400, {
+      response: {
+        success: false,
+        message: "Query not converted to vector, please try again",
+      },
+    });
+    return;
+  }
+
+  const resultVectorSearchBookGenre = await findSimilarGenresBooks(
+    searchQueryEmbedding
+  );
+  console.log(resultVectorSearchBookGenre);
+
+  resultVectorSearchBookGenre
+    ? sendResponse(ctx, 200, {
+        response: {
+          success: true,
+          message: "Book with similar genres",
+          data: resultVectorSearchBookGenre,
+        },
+      })
+    : sendResponse(ctx, 400, {
+        response: {
+          success: false,
+          message: "No Book Found",
+        },
+      });
 });

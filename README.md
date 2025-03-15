@@ -14,3 +14,4 @@
 12. Auto-Generating review based on user's review or directly based on book details without user's review
 13. Nested Comment added (UPTO 1 level) (CRUD + sorting) done
 14. Feature Flag added ( if feature is active then only it will work else not)
+15. Vector Search added for searching semantic over the genres ( note: need to add to book description for better experince)
