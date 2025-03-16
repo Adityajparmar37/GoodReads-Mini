@@ -39,7 +39,7 @@ export const validateDescription = (ctx) => {
     };
 
   if (description) {
-    const { success, message } = isValidDescription(description,2,10);
+    const { success, message } = isValidDescription(description, 2, 10);
 
     if (!success)
       return {
@@ -139,6 +139,7 @@ export const validateBooksExist = async (ctx) => {
 
 export const validateShelevs = async (ctx) => {
   const shelvesIds = ctx.request.body?.shelves;
+  const loginUserId = ctx.state.user;
 
   if (!shelvesIds)
     return {
@@ -146,7 +147,7 @@ export const validateShelevs = async (ctx) => {
       message: "Please provide shelves Id",
     };
 
-  const { success, message } = await isShelvesExists(shelvesIds);
+  const { success, message } = await isShelvesExists(shelvesIds, loginUserId);
 
   if (!success)
     return {
@@ -167,7 +168,7 @@ export const validateBookInShelf = async (ctx) => {
   if (shelvesIds && bookId) {
     for (const shelfId of shelvesIds) {
       const result = await bookInShelf({ shelfId, bookId });
-      if (result.length > 0)
+      if (result?.length > 0)
         return {
           field: "Shelf's Book",
           message: "Book already exist in shelf ",
@@ -189,4 +190,22 @@ export const checkBookAbsenceInShelf = async (ctx) => {
         };
     }
   }
+};
+
+export const validateBookStatus = (ctx) => {
+  const status = ctx.request.body?.status;
+
+  if (status) {
+    if (!["CR", "WR", "R"].includes(status)) {
+      return {
+        field: "Book status",
+        message: "Please provide valid status",
+      };
+    }
+  }
+
+  ctx.state.book = {
+    ...ctx.state.book,
+    ...(status ? { status } : { status: "WR" }),
+  };
 };

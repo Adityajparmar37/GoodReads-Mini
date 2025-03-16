@@ -18,6 +18,7 @@ import {
   validateBookInShelf,
   isShelfValid,
   checkBookAbsenceInShelf,
+  validateBookStatus,
 } from "../validator/shelf.js";
 import {
   createShelf,
@@ -78,6 +79,7 @@ route.patch(
     validateShelfName,
     validateDescription,
     isPrivateValid,
+    validateBookStatus,
   ]),
   updateShelf
 );
@@ -105,6 +107,7 @@ route.post(
     isBookValid,
     validateShelevs,
     validateBookInShelf,
+    validateBookStatus,
   ]),
   addBookToShelves
 );

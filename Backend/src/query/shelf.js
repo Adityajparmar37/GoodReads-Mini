@@ -61,6 +61,7 @@ export const shelfBooks = (shelfId) =>
           description: "$BookDetails.description",
           averageRating: "$BookDetails.averageRating",
           author: "$BookDetails.author",
+          status: 1,
           _id: 0,
         },
       },

@@ -31,6 +31,12 @@ export const platformActionsToDeletePost = Object.freeze({
   1: deleteFacebookPost,
 });
 
+export const bookStatusMapping = Object.freeze({
+  CR: "Currently reading",
+  WR: "Want to read",
+  R: "read",
+});
+
 export const messageTypeMapping = Object.freeze({
   T: "Text",
   P: "Post",

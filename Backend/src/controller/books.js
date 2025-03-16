@@ -181,7 +181,6 @@ export const removeBook = handleAsync(async (ctx) => {
 export const vectorSearchBookGenres = handleAsync(async (ctx) => {
   const searchQuery = ctx.state.shared.searchTerm;
   const searchQueryEmbedding = await getEmbedding(ctx, searchQuery);
-  console.log("sqe", searchQueryEmbedding);
 
   if (!searchQueryEmbedding) {
     sendResponse(ctx, 400, {
@@ -196,7 +195,6 @@ export const vectorSearchBookGenres = handleAsync(async (ctx) => {
   const resultVectorSearchBookGenre = await findSimilarGenresBooks(
     searchQueryEmbedding
   );
-  console.log(resultVectorSearchBookGenre);
 
   resultVectorSearchBookGenre
     ? sendResponse(ctx, 200, {

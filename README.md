@@ -1,17 +1,124 @@
 # GoodReads-Mini
 
-1. Project Setup done
-2. Auth Module (register, verify, login) done
-3. Book Module (CRUD Book, verified user and having permission to upload book, filtering + searching + sorting books + pagination) done
-4. Rating and Review Module (CRUD rating&review, remove reviews if book delete, update rating of books) done
-5. Social Media Posting Module (CRD social media post, filter posts based on platform & sort) done
-6. Shelves Module (CRUD on shelf, CRUD shelf's book , filtering + searching + sorting shelves + pagination) done
-7. Follower Module (CRD on follower, sorting + pagination) done
-8. Friend Module (CRUD on friend, sorting + pagination on friend lists) done
-9. Group Module (CRUD , invite user , join public group, assign role and permissions, get members + searching, sorting, paginaiton) done
-10. Chat Module (chatting in group by socket)
-11. Review's comment and Like (CRUD + sorting) done
-12. Auto-Generating review based on user's review or directly based on book details without user's review
-13. Nested Comment added (UPTO 1 level) (CRUD + sorting) done
-14. Feature Flag added ( if feature is active then only it will work else not)
-15. Vector Search added for searching semantic over the genres ( note: need to add to book description for better experince)
+## Introduction
+
+GoodReads-Mini is a comprehensive book management and social platform that allows users to register, manage books, rate and review books, create social media posts, organize books into shelves, follow users, make friends, join groups, chat, and much more. Have a sematic search over the though of your choices
+
+## Features
+
+### Authentication Module
+
+- User Registration
+- Email Verification
+- Login
+
+### Book Module
+
+- CRUD operations on books
+- Only verified users with permission can upload books
+- Filtering, searching, and sorting books
+- Pagination support
+
+### Rating & Review Module
+
+- CRUD operations on book reviews and ratings
+- Auto-remove reviews when a book is deleted
+- Update book rating based on user reviews
+
+### Social Media Posting Module
+
+- Create, Read, and Delete social media posts
+- Filter posts based on platform
+- Sorting options available
+
+### Shelves Module
+
+- CRUD operations on shelves
+- CRUD operations on books within a shelf , with book status (currently reading, wants to read or read)
+- Filtering, searching, and sorting shelves
+- Pagination support
+
+### Follower Module
+
+- Create, Read, and Delete followers
+- Sorting and pagination support
+
+### Friend Module
+
+- CRUD operations on friends
+- Sorting and pagination on friend lists
+
+### Group Module
+
+- Create, Read, Update, Delete groups
+- Invite users to groups
+- Join public groups
+- Assign roles and permissions to group members
+- Get members with searching, sorting, and pagination
+
+### Chat Module
+
+- Group chat using WebSockets
+
+### Review's Comment & Like Module
+
+- CRUD operations on comments and likes
+- Sorting options available
+
+### AI-Generated Reviews
+
+- Auto-generate a review based on a user's review
+- Directly generate a review based on book details if no user review is provided
+
+### Nested Comments
+
+- Nested comments up to one level
+- CRUD operations on nested comments
+- Sorting support
+
+### Feature Flag
+
+- Enable or disable features dynamically
+
+### Vector Search
+
+- Enhanced semantic search over genres
+- Can be extended to book descriptions for better search experience
+
+## Installation
+
+### Prerequisites
+
+Ensure you have the following installed:
+
+- Node.js (latest LTS version)
+- MongoDB / PostgreSQL (as per your database choice)
+- Redis (if used for caching or real-time data processing)
+
+### Setup
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-repo/bookhub-api.git
+   cd Backend
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+3. Set up environment variables:
+   Create a `.env` file and configure the necessary environment variables.
+   According to `.env.example` file
+
+4. Start the server:
+   ```sh
+   npm run start
+   ```
+
+## API Documentation
+
+For detailed API endpoints and request/response structures, refer to the following API documentation.
+
+`https://documenter.getpostman.com/view/27919522/2sAYk7QiZN`
+
+Hope you like the project 🤞🏻

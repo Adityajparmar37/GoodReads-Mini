@@ -12,6 +12,7 @@ import { handleAsync } from "../middleware/handleAsync.js";
 import { createId } from "../utils/createId.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { timestamp } from "../utils/timestamp.js";
+import { bookStatusMapping } from "../utils/mapping.js";
 
 // @route   POST/api/v1/shelf/
 // @desc    create shelf
@@ -49,9 +50,10 @@ export const getShelves = handleAsync(async (ctx) => {
   const userId = ctx.state.user;
   const fetchUserOnly = ctx.path.endsWith("/my");
   const { searchTerm, sortOrder, page, limit } = ctx.state.shared;
-  const isPrivateShevles = fetchUserOnly ? { userId } : { isPrivate: false };
+
+  const isPrivateShelves = fetchUserOnly ? { userId } : { isPrivate: false };
   const query = {
-    ...isPrivateShevles,
+    ...isPrivateShelves,
     ...(searchTerm && {
       $or: [
         { shelfName: { $regex: searchTerm, $options: "i" } },
@@ -59,6 +61,7 @@ export const getShelves = handleAsync(async (ctx) => {
       ],
     }),
   };
+
   const shelvesResult = await findShevles(query, sortOrder, page, limit);
 
   if (shelvesResult.length === 0) {
@@ -74,9 +77,14 @@ export const getShelves = handleAsync(async (ctx) => {
   const booksInShelves = await Promise.all(
     shelvesResult.map(async (shelf) => {
       const books = await shelfBooks(shelf.shelfId);
+      const mappedBooks = books.map((book) => ({
+        ...book,
+        status: bookStatusMapping[book.status] || "Unknown",
+      }));
+
       return {
         ...shelf,
-        books: books.length > 0 ? books : [],
+        books: mappedBooks.length > 0 ? mappedBooks : [],
       };
     })
   );
@@ -95,6 +103,7 @@ export const getShelves = handleAsync(async (ctx) => {
         },
       });
 });
+
 
 // @route   GET /api/v1/shelf/:shelfId
 // @desc    Get shelf
@@ -189,10 +198,12 @@ export const removeShelf = handleAsync(async (ctx) => {
 // @desc    add book to multiple shelves
 export const addBookToShelves = handleAsync(async (ctx) => {
   const shelves = ctx.state?.shelf?.shelvesIds;
+  const status = ctx.state.book?.status;
   const { bookId } = ctx.state?.book;
   const shelvesBook = shelves?.map((shelfId) => ({
     shelfId,
     bookId,
+    status,
     createdAt: timestamp(),
     updatedAt: timestamp(),
   }));

@@ -25,6 +25,9 @@ export const findBooks = async (
               text: {
                 query: searchTerm,
                 path: ["title", "description", "author"],
+                fuzzy: {
+                  maxEdits: 2, // Allows typo tolerance (0, 1, or 2)
+                },
               },
             },
           ],
@@ -43,6 +46,7 @@ export const findBooks = async (
       },
     },
     { $unwind: { path: "$publishedDetails" } },
+    { $project: { description_genres_embedding: 0 } },
     { $sort: { createdAt: sortOrder } },
     { $skip: (page - 1) * limit },
     { $limit: limit }
@@ -82,10 +86,10 @@ export const findSimilarGenresBooks = (searchQueryEmbedded) =>
       {
         $vectorSearch: {
           queryVector: searchQueryEmbedded,
-          path: "genres_embedding",
+          path: "description_genres_embedding",
           numCandidates: 100,
           limit: 10,
-          index: "vector_search_genres",
+          index: "descriptionGenresIndex",
         },
       },
       {
@@ -95,7 +99,7 @@ export const findSimilarGenresBooks = (searchQueryEmbedded) =>
       },
       {
         $match: {
-          score: { $gte: 0.65 }, // Apply similarity threshold
+          score: { $gte: 0.67 }, //similarity threshold
         },
       },
       {
