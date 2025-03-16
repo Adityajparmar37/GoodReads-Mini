@@ -91,10 +91,10 @@ GoodReads-Mini is a comprehensive book management and social platform that allow
 
 Ensure you have the following installed:
 
-- Node.js (latest LTS version)
-- MongoDB / PostgreSQL (as per your database choice)
-- Redis (if used for caching or real-time data processing)
-
+- Node.js 
+- KoaJS
+- MongoDB
+ 
 ### Setup
 
 1. Clone the repository:
