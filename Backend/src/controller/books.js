@@ -8,6 +8,7 @@ import {
   findSimilarGenresBooks,
 } from "../query/books.js";
 import { deleteReviews } from "../query/review.js";
+import { deleteBookFromShelf } from "../query/shelf.js";
 import { createId } from "../utils/createId.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { timestamp } from "../utils/timestamp.js";
@@ -71,7 +72,7 @@ export const getBooks = handleAsync(async (ctx) => {
 // @desc    get book
 export const getBook = handleAsync(async (ctx) => {
   const bookId = ctx.state.book;
-  const result = await findOneBook(bookId);
+  const result = (await findOneBook(bookId)).at(0);
 
   result
     ? sendResponse(ctx, 200, {
@@ -146,9 +147,9 @@ export const removeBook = handleAsync(async (ctx) => {
     results;
 
   if (
-    bookDeleteResult.acknowledged ||
-    reviewDeleteResult.acknowledged ||
-    removeBookFromShelfResult.acknowledged
+    !bookDeleteResult.acknowledged ||
+    !reviewDeleteResult.acknowledged ||
+    !removeBookFromShelfResult.acknowledged
   ) {
     sendResponse(ctx, 400, {
       response: {

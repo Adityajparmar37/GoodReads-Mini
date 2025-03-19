@@ -15,7 +15,8 @@ export const isbooksExists = async (bookIds) => {
         message: "Please provide valid book Id",
       };
 
-    if (!(await findOneBook({ bookId })))
+    const booksExist = (await findOneBook({ bookId })).at(0);
+    if (!booksExist)
       return {
         success: false,
         message: "Book does not exist",

@@ -4,9 +4,9 @@ import { reversePlatformMapping } from "../utils/mapping.js";
 import { apiCaller } from "./apiCaller.js";
 const query = { access_token: FACEBOOK_PAGE_ACCESS_TOKEN };
 
-export const postToFacebook = (ctx, data) => {
+export const postToFacebook = async (ctx, data) => {
   const baseUrl = faceBookUrls["photos_post_url"];
-  const response = apiCaller(ctx, "post", baseUrl, query, data);
+  const response = await apiCaller(ctx, "post", baseUrl, query, data);
 
   return response.status === 200
     ? { success: true, postId: response.data.post_id, platform: 1 }
@@ -17,10 +17,9 @@ export const postToFacebook = (ctx, data) => {
       };
 };
 
-export const deleteFacebookPost = (ctx, postId) => {
+export const deleteFacebookPost = async (ctx, postId) => {
   const baseUrl = faceBookUrls["delete_post_url"] + `/${postId}`;
-  const response = apiCaller(ctx, "delete", baseUrl, query);
-
+  const response = await apiCaller(ctx, "delete", baseUrl, query);
   return response.data.success
     ? { success: true, platform: 1 }
     : {

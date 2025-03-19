@@ -17,7 +17,7 @@ export const validateStars = (ctx) => {
 };
 
 export const validReview = (ctx) => {
-  const review = ctx.request.body.review;
+  const review = ctx.request.body?.review;
 
   if (review) {
     const { success, message } = isValidComment(review);
@@ -57,18 +57,25 @@ export const validateReviewId = (ctx) => {
 
 export const isReviewExist = async (ctx) => {
   const reviewId = ctx?.state?.reviews?.reviewId;
+  const userId = ctx.state.user;
   let result;
 
   if (reviewId) {
     result = await findOneReview({ reviewId });
 
-    if (!result) {
+    if (!result)
       return {
         field: "Review",
         message: "Review does not exist",
       };
-    }
+
+    if (result.userId !== userId)
+      return {
+        field: "Review",
+        message: "It is not your review",
+      };
   }
+
   if (reviewId) {
     ctx.state.book = {
       ...ctx.state.book,
@@ -80,9 +87,9 @@ export const isReviewExist = async (ctx) => {
 export const isPlubisherReview = async (ctx) => {
   const userId = ctx.state.user;
   const bookId = ctx?.state?.book?.bookId;
-  const bookDetails = await findOneBook({ bookId });
+  const bookDetails = (await findOneBook({ bookId })).at(0);
 
-  if (userId === bookDetails.publishedBy)
+  if (userId === bookDetails?.publishedBy)
     return {
       field: "Review",
       message: "Plubisher cannot add review",

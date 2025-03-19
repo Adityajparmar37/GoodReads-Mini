@@ -52,7 +52,7 @@ export const validateDescription = (ctx) => {
     };
 
   if (description) {
-    const { success, message } = isValidDescription(description,10,200);
+    const { success, message } = isValidDescription(description, 10, 200);
     if (!success)
       return {
         field: "Book description",
@@ -165,8 +165,7 @@ export const validateCoverImage = (ctx) => {
 
 export const isBookExist = async (ctx) => {
   const { title } = ctx?.state.book;
-  const bookExist = await findOneBook({ title });
-
+  const bookExist = (await findOneBook({ title })).at(0);
   if (bookExist) {
     return {
       field: "Book",
@@ -200,7 +199,7 @@ export const isBookValid = async (ctx) => {
   const bookId = ctx?.state?.book?.bookId;
 
   if (bookId) {
-    const result = await findOneBook({ bookId });
+    const result = (await findOneBook({ bookId })).at(0);
     if (!result) {
       return {
         field: "Book",

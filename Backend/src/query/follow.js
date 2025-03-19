@@ -12,7 +12,7 @@ export const removeFollower = (filter) =>
 
 export const updateFollower = (filter, updateQuery) =>
   client.db(DATABASE).collection(follow).updateOne(filter, updateQuery);
-  
+
 export const findFollowing = (userId, sortOrder, page, limit) =>
   client
     .db(DATABASE)
@@ -36,8 +36,13 @@ export const findFollowing = (userId, sortOrder, page, limit) =>
         $project: {
           _id: 0,
           userName: {
-            $concat: ["$followerUser.firstName", " ", "$followerUser.lastName"],
+            $concat: [
+              "$followingUser.firstName",
+              " ",
+              "$followingUser.lastName",
+            ],
           },
+          createdAt: 1,
         },
       },
       {
@@ -77,6 +82,7 @@ export const findFollowers = (userId, sortOrder, page, limit) =>
           userName: {
             $concat: ["$followerUser.firstName", " ", "$followerUser.lastName"],
           },
+          createdAt: 1,
         },
       },
       {

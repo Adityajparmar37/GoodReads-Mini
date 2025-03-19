@@ -6,8 +6,47 @@ const groupMembers = "group_members";
 export const insertGroup = (groupData) =>
   client.db(DATABASE).collection(groups).insertOne(groupData);
 
-export const findGroup = (query) =>
-  client.db(DATABASE).collection(groups).find(query).toArray();
+export const findGroup = (query, sortOrder, page, limit) =>
+  client
+    .db(DATABASE)
+    .collection("groups")
+    .aggregate([
+      { $match: query },
+      {
+        $lookup: {
+          from: "users",
+          localField: "ownerId",
+          foreignField: "userId",
+          as: "ownerDetails",
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          groupName: 1,
+          groupDescription: 1,
+          groupId: 1,
+          createdAt: 1,
+          ownerFullName: {
+            $concat: [
+              { $arrayElemAt: ["$ownerDetails.firstName", 0] },
+              " ",
+              { $arrayElemAt: ["$ownerDetails.lastName", 0] },
+            ],
+          },
+        },
+      },
+      {
+        $sort: { createdAt: sortOrder },
+      },
+      {
+        $skip: (page - 1) * limit,
+      },
+      {
+        $limit: limit,
+      },
+    ])
+    .toArray();
 
 export const findGroupById = (groupId) =>
   client.db(DATABASE).collection(groups).findOne(groupId);

@@ -94,6 +94,7 @@ route.delete(
 
 route.delete(
   "/:shelfId",
+  auth,
   validator([validateShelfId, isShelfExist]),
   removeShelf
 );
@@ -121,6 +122,7 @@ route.post(
     isShelfExist,
     validateBooksExist,
     validateBookInShelf,
+    validateBookStatus,
   ]),
   moveBookfromShelf
 );

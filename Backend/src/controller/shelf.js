@@ -104,7 +104,6 @@ export const getShelves = handleAsync(async (ctx) => {
       });
 });
 
-
 // @route   GET /api/v1/shelf/:shelfId
 // @desc    Get shelf
 export const getShelf = handleAsync(async (ctx) => {
@@ -167,9 +166,8 @@ export const updateShelf = handleAsync(async (ctx) => {
 export const removeShelf = handleAsync(async (ctx) => {
   const shelfId = ctx.state.shelf;
   const result = await deleteShelf(shelfId);
-  const removeShelfBooks = await removeBookfromShelf(shelfId);
 
-  if (!result.acknowledged || !removeShelfBooks.acknowledged) {
+  if (!result.acknowledged) {
     sendResponse(ctx, 400, {
       response: {
         field: "shelf",
@@ -179,7 +177,9 @@ export const removeShelf = handleAsync(async (ctx) => {
     return;
   }
 
-  result.deletedCount > 0
+  const removeShelfBooks = await deleteBookFromShelf(shelfId);
+
+  result.deletedCount > 0 && removeShelfBooks.acknowledged
     ? sendResponse(ctx, 200, {
         response: {
           success: true,
@@ -258,10 +258,13 @@ export const removeBookfromShelf = handleAsync(async (ctx) => {
 // @route   POST/api/v1/shelf/
 // @desc    move multiple books to one shelf
 export const moveBookfromShelf = handleAsync(async (ctx) => {
-  const { books, shelfId } = ctx.request.body;
+  const books = ctx.state.shelf?.bookIds;
+  const shelfId = ctx.state.shared?.shelfId;
+  const status = ctx.state.book?.status;
   const booksToAdd = books?.map((bookId) => ({
     shelfId,
     bookId,
+    status,
     createdAt: timestamp(),
     updatedAt: timestamp(),
   }));

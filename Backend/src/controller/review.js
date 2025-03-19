@@ -66,8 +66,14 @@ export const addReview = handleAsync(async (ctx) => {
 export const getReviews = handleAsync(async (ctx) => {
   const bookId = ctx.state.book;
   const userId = ctx.state.user;
+  const { sortOrder, page, limit } = ctx.state?.shared;
 
-  const result = await findReviews(bookId ? bookId : { userId });
+  const result = await findReviews(
+    bookId ? bookId : { userId },
+    sortOrder,
+    page,
+    limit
+  );
 
   result.length > 0
     ? sendResponse(ctx, 200, {
@@ -128,7 +134,7 @@ export const removeReview = handleAsync(async (ctx) => {
     () => deleteReview({ reviewId }),
     () => decrementBookReviewCount({ bookId }),
     () => deleteReviewAllComments({ reviewId }),
-    () => deleteReviewAllLikes(reviewId),
+    () => deleteReviewAllLikes({ reviewId }),
   ];
 
   const results = await Bluebird.mapSeries(deleteOperations, (queries) =>
@@ -176,7 +182,9 @@ export const removeReview = handleAsync(async (ctx) => {
 export const generateReview = handleAsync(async (ctx) => {
   const bookId = ctx.state?.book?.bookId;
   const userPrompt = ctx.state.shared?.prompt ?? "";
-  const { title, description, author, genres } = await findOneBook({ bookId });
+  const { title, description, author, genres } = (
+    await findOneBook({ bookId })
+  ).at(0);
 
   // Reformat the prompt based on specified requirements
   const inputPrompt = createUserInputForBookReview(

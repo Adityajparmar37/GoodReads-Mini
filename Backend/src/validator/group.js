@@ -1,4 +1,5 @@
 import { findUserById } from "../query/auth.js";
+import { findOneFriend } from "../query/friend.js";
 import { findGroupById, findMemberById } from "../query/group.js";
 import {
   isValidateId,
@@ -63,6 +64,11 @@ export const validateIsPrivate = (ctx) => {
       field: "Group private",
       message: "Please provide valid group private",
     };
+
+  ctx.state.group = {
+    ...ctx.state.group,
+    ...(isPrivate ? { isPrivate } : { isPrivate: false }),
+  };
 };
 
 export const isValidGroupId = (ctx) => {
@@ -171,10 +177,30 @@ export const isGroupPublic = async (ctx) => {
 
 export const isNotMember = async (ctx) => {
   const memberId = ctx.state.user;
-  const userExist = await findUserById(memberId);
+  const groupId = ctx.state.group?.groupId;
+  const userExist = await findMemberById({ memberId, groupId });
+
   if (!userExist)
     return {
       field: "Member",
       message: "Member user does not exist",
+    };
+};
+
+export const isFriend = async (ctx) => {
+  const userId = ctx.state.user;
+  const memberId = ctx.state.group?.member?.memberId;
+
+  const result = await findOneFriend({
+    $or: [
+      { friendId: userId, userId: memberId },
+      { friendId: memberId, userId },
+    ],
+  });
+
+  if (!result)
+    return {
+      field: "Member Friend",
+      message: "You are not friends",
     };
 };

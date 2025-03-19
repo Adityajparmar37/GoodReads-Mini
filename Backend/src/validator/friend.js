@@ -15,7 +15,7 @@ export const isValidFriendId = (ctx) => {
   if (userId === friendId)
     return {
       field: "Friend Id",
-      message: "You cannot send friend request to yourself",
+      message: "You cannot request to yourself",
     };
 
   if (!isValidateId(friendId))

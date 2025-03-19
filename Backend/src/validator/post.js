@@ -26,7 +26,7 @@ export const validateSocialMediaPlatform = (ctx) => {
 
 export const validateSharedId = (ctx) => {
   const sharedId = ctx.params.sharedId;
-
+  
   if (!sharedId)
     return {
       field: "shared Id",
@@ -47,6 +47,7 @@ export const validateSharedId = (ctx) => {
 
 export const isPostExist = async (ctx) => {
   const sharedId = ctx?.state?.shared;
+  const userId = ctx.state.user;
 
   if (sharedId) {
     const result = await findPostById(sharedId);
@@ -55,6 +56,12 @@ export const isPostExist = async (ctx) => {
       return {
         field: "Post",
         message: "Post does not exist",
+      };
+
+    if (result.userId !== userId)
+      return {
+        field: "Post",
+        message: "Not post of yours",
       };
   }
 };

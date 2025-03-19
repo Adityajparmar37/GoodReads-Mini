@@ -19,6 +19,8 @@ import {
   isAlreadyMember,
   validateMember,
   isGroupPublic,
+  isFriend,
+  isNotMember,
 } from "../validator/group.js";
 import {
   isBodyEmpty,
@@ -90,7 +92,13 @@ route.post(
 route.get(
   "/members/:groupId",
   auth,
-  validator([isValidGroupId, isGroupExist, validateSortOrder, validatepage]),
+  validator([
+    isValidGroupId,
+    isGroupExist,
+    isNotMember,
+    validateSortOrder,
+    validatepage,
+  ]),
   getMembers
 );
 
@@ -121,6 +129,7 @@ route.post(
     IsUserExist,
     validateMember,
     isAlreadyMember,
+    isFriend,
   ]),
   setPermissions,
   addMember

@@ -8,8 +8,38 @@ export const insertReview = (reviewData) =>
 export const findOneReview = (filter) =>
   client.db(DATABASE).collection(reviews).findOne(filter);
 
-export const findReviews = (filter) =>
-  client.db(DATABASE).collection(reviews).find(filter).toArray();
+export const findReviews = (filter, sortOrder, page, limit) =>
+  client
+    .db(DATABASE)
+    .collection(reviews)
+    .aggregate([
+      { $match: filter },
+      {
+        $lookup: {
+          from: "users",
+          foreignField: "userId",
+          localField: "userId",
+          as: "UserDetails",
+        },
+      },
+      { $unwind: { path: "$UserDetails" } },
+      {
+        $project: {
+          _id: 0,
+          review: 1,
+          stars: 1,
+          reviewId: 1,
+          createdAt: 1,
+          ReviewBy: {
+            $concat: ["$UserDetails.firstName", " ", "$UserDetails.lastName"],
+          },
+        },
+      },
+      { $sort: { createdAt: sortOrder } },
+      { $skip: (page - 1) * limit },
+      { $limit: limit },
+    ])
+    .toArray();
 
 export const updateReviewById = (reviewId, updateReviewData) =>
   client
@@ -32,14 +62,12 @@ export const updateBookAvgRating = async (bookId) => {
         $group: {
           _id: null,
           avgRating: { $avg: "$stars" },
-          count: { $sum: 1 },
         },
       },
       {
         $project: {
           _id: 0,
           avgRating: { $round: ["$avgRating", 2] },
-          count: 1,
         },
       },
     ])
@@ -48,14 +76,13 @@ export const updateBookAvgRating = async (bookId) => {
   // Get the average rating and count from aggregation result
   const avgRating =
     calculateAvgRating.length > 0 ? calculateAvgRating[0].avgRating : 0;
-  const reviewCount =
-    calculateAvgRating.length > 0 ? calculateAvgRating[0].count : 0;
 
   const result = await client
     .db(DATABASE)
     .collection(books)
     .updateOne(bookId, {
-      $set: { averageRating: avgRating, bookReviewCount: reviewCount },
+      $set: { averageRating: avgRating },
+      $inc: { bookReviewCount: 1 },
     });
 
   return result;

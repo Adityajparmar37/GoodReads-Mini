@@ -1,5 +1,4 @@
 import { handleAsync } from "../middleware/handleAsync.js";
-import { findUserById } from "../query/auth.js";
 import {
   deleteFriend,
   findFriends,
@@ -51,7 +50,7 @@ export const acceptFriendRequst = handleAsync(async (ctx) => {
     ? sendResponse(ctx, 200, {
         response: {
           success: true,
-          message: "Accepted Friend Requested",
+          message: "Friend Request Accepted",
         },
       })
     : sendResponse(ctx, 400, {

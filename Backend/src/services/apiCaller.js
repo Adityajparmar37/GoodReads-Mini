@@ -14,8 +14,8 @@ export const apiCaller = async (
   ctx,
   method,
   baseUrl,
-  data = null,
   query = null,
+  data = null,
   headers = null
 ) =>
   await axios({
@@ -26,7 +26,7 @@ export const apiCaller = async (
     headers,
   }).catch((error) => {
     //print it in slack
-    console.log(`API Call Error: ${error}`);
+    // console.log(`API Call Error: ${error}`);
     ctx.throw(
       400,
       `error ${error?.response?.data?.error?.message}, please try again` ||

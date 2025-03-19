@@ -16,7 +16,12 @@ import {
   getReviews,
   generateReview,
 } from "../controller/index.js";
-import { isBodyEmpty, validatePrompt } from "../validator/common.js";
+import {
+  isBodyEmpty,
+  validatepage,
+  validatePrompt,
+  validateSortOrder,
+} from "../validator/common.js";
 import { featureActivationStatus } from "../middleware/featureActivationStatus.js";
 
 const route = new Router({ prefix: "/reviews" });
@@ -46,10 +51,15 @@ route.post(
 route.get(
   "/book/:bookId",
   auth,
-  validator([validateBookId, isBookValid]),
+  validator([validateBookId, isBookValid, validateSortOrder, validatepage]),
   getReviews
 );
-route.get("/user", auth, getReviews);
+route.get(
+  "/user",
+  auth,
+  validator([validateSortOrder, validatepage]),
+  getReviews
+);
 
 route.patch(
   "/:reviewId",

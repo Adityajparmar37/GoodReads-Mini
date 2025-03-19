@@ -5,14 +5,47 @@ export const insertBook = (bookData) =>
   client.db(DATABASE).collection(books).insertOne(bookData);
 
 export const findOneBook = (filter) =>
-  client.db(DATABASE).collection(books).findOne(filter);
+  client
+    .db(DATABASE)
+    .collection(books)
+    .aggregate([
+      { $match: filter },
+      {
+        $lookup: {
+          from: "users",
+          foreignField: "userId",
+          localField: "publishedBy",
+          as: "publishedDetails",
+        },
+      },
+      { $unwind: { path: "$publishedDetails" } },
+      {
+        $project: {
+          _id: 0,
+          title: 1,
+          description: 1,
+          averageRating: 1,
+          bookReviewCount: 1,
+          bookId: 1,
+          author: 1,
+          genres: 1,
+          createdAt: 1,
+          coverImage:1,
+          publishedBy: 1,
+          publisher: {
+            $concat: [
+              "$publishedDetails.firstName",
+              " ",
+              "$publishedDetails.lastName",
+            ],
+          },
+          publisherEmail: "$publishedDetails.email",
+        },
+      },
+    ])
+    .toArray();
 
-export const findBooks = async (
-  searchTerm,
-  sortOrder,
-  page = 1,
-  limit = 10
-) => {
+export const findBooks = async (searchTerm, sortOrder, page, limit) => {
   const pipeline = [];
 
   if (searchTerm) {
@@ -25,9 +58,6 @@ export const findBooks = async (
               text: {
                 query: searchTerm,
                 path: ["title", "description", "author"],
-                fuzzy: {
-                  maxEdits: 2, // Allows typo tolerance (0, 1, or 2)
-                },
               },
             },
           ],
@@ -46,7 +76,25 @@ export const findBooks = async (
       },
     },
     { $unwind: { path: "$publishedDetails" } },
-    { $project: { description_genres_embedding: 0 } },
+    {
+      $project: {
+        _id: 1,
+        title: 1,
+        description: 1,
+        bookId: 1,
+        author: 1,
+        genres: 1,
+        createdAt: 1,
+        publishedBy: {
+          $concat: [
+            "$publishedDetails.firstName",
+            " ",
+            "$publishedDetails.lastName",
+          ],
+        },
+        publisherEmail: "$publishedDetails.email",
+      },
+    },
     { $sort: { createdAt: sortOrder } },
     { $skip: (page - 1) * limit },
     { $limit: limit }
@@ -99,7 +147,7 @@ export const findSimilarGenresBooks = (searchQueryEmbedded) =>
       },
       {
         $match: {
-          score: { $gte: 0.67 }, //similarity threshold
+          score: { $gte: 0.65 }, //similarity threshold
         },
       },
       {

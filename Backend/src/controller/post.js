@@ -21,7 +21,7 @@ export const postBook = handleAsync(async (ctx) => {
   const platforms = ctx.state.post?.platforms;
   const userId = ctx.state.user;
   const bookId = ctx.state.book;
-  const bookDetails = await findOneBook(bookId);
+  const bookDetails = (await findOneBook(bookId)).at(0);
 
   const postData = {
     message: `📔 Title: ${bookDetails.title}\u000A\u000A 📃 About: ${bookDetails.description}\u000A\u000A\u000A ✒️ Author: ${bookDetails.author}\u000A\u000A\u000A ⭐ Rating: ${bookDetails.averageRating}`,
@@ -60,7 +60,7 @@ export const postBook = handleAsync(async (ctx) => {
       })
   );
 
-  result.length > 0
+  result.length > 0 && failedMessage.length === 0
     ? sendResponse(ctx, 200, {
         response: {
           success: true,
@@ -103,32 +103,32 @@ export const getPosts = handleAsync(async (ctx) => {
 // @route   DELETE/api/v1/posts/
 // @desc    delete the post
 export const deleteBookPost = handleAsync(async (ctx) => {
-  const sharedId = ctx.state.shared.shareId;
-  const findPost = await findPostById(sharedId);
+  const sharedId = ctx.state.shared?.sharedId;
+  const findPost = await findPostById({ sharedId });
 
   if (!findPost)
     return {
       success: false,
       message: "Cannot find the post",
     };
-  
+
   //get delete service of social platform
   const postDeleteResult = await platformActionsToDeletePost[findPost.platform](
     ctx,
     findPost.postId
   );
 
-  if (!postDeleteResult.success) {
-    sendResponse(ctx, 200, {
+  if (!postDeleteResult?.success) {
+    sendResponse(ctx, 400, {
       response: {
-        success: true,
+        success: false,
         message: `${postDeleteResult.message}, on ${postDeleteResult.platform}`,
       },
     });
     return;
   }
 
-  const result = await deletePost(sharedId);
+  const result = await deletePost({ sharedId });
 
   result.deletedCount > 0
     ? sendResponse(ctx, 200, {

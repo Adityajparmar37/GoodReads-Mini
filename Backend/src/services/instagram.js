@@ -8,7 +8,7 @@ const query = { access_token: `${FACEBOOK_PAGE_ACCESS_TOKEN}` };
 export const postToInstagram = async (ctx, postData) => {
   const { message: caption, url: image_url } = postData;
 
-  //need to pass post data as query for instagram api endpoint 
+  //need to pass post data as query for instagram api endpoint
   const postQuery = {
     ...query,
     ...Object.fromEntries(new URLSearchParams({ caption, image_url })),

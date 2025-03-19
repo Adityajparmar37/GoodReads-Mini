@@ -90,6 +90,7 @@ export const validateShelfId = (ctx) => {
 
 export const isShelfExist = async (ctx) => {
   const shelfId = ctx.state?.shared;
+  const userId = ctx.state.user;
 
   if (shelfId) {
     const result = await findOneShelf(shelfId);
@@ -98,6 +99,12 @@ export const isShelfExist = async (ctx) => {
       return {
         field: "shelf",
         message: "Shelf does not exist",
+      };
+
+    if (result.userId !== userId)
+      return {
+        field: "shelf",
+        message: "Not your self",
       };
   }
 };
@@ -114,7 +121,7 @@ export const isShelfValid = async (ctx) => {
 };
 
 export const validateBooksExist = async (ctx) => {
-  const bookIds = ctx.request.body?.bookId;
+  const bookIds = ctx.request.body?.books;
 
   if (!bookIds)
     return {
@@ -161,18 +168,30 @@ export const validateShelevs = async (ctx) => {
   };
 };
 
+// will check whether book already is present in the shelf or not
 export const validateBookInShelf = async (ctx) => {
-  const bookId = ctx?.state?.book?.bookId;
-  const shelvesIds = ctx.state?.shelf?.shelvesIds;
+  const bookId = ctx?.state?.book?.bookId || ctx?.state?.shelf?.bookIds;
+  const shelvesIds = ctx.state?.shelf?.shelvesIds || ctx.state.shared?.shelfId;
 
   if (shelvesIds && bookId) {
-    for (const shelfId of shelvesIds) {
-      const result = await bookInShelf({ shelfId, bookId });
-      if (result?.length > 0)
-        return {
-          field: "Shelf's Book",
-          message: "Book already exist in shelf ",
-        };
+    if (Array.isArray(shelvesIds)) {
+      for (const shelfId of shelvesIds) {
+        const result = await bookInShelf({ shelfId, bookId });
+        if (result)
+          return {
+            field: "Shelf's Book",
+            message: "Book already exist in shelf ",
+          };
+      }
+    } else if (Array.isArray(bookId)) {
+      for (const book of bookId) {
+        const result = await bookInShelf({ shelfId: shelvesIds, bookId: book });
+        if (result)
+          return {
+            field: "Shelf's Book",
+            message: "Book already exist in shelf ",
+          };
+      }
     }
   }
 };
