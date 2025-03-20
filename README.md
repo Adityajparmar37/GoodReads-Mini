@@ -2,7 +2,7 @@
 
 ## Introduction
 
-GoodReads-Mini is a comprehensive book management and social platform that allows users to register, manage books, rate and review books, create social media posts, organize books into shelves, follow users, make friends, join groups, chat, and much more. Have a sematic search over the though of your choices
+GoodReads-Mini is a comprehensive book readers system & social platform that allows users to register, manage books, rate and review books, create social media posts, organize books into shelves, follow users, make friends, join groups, chat, and much more. Have a sematic search over the though of your choices through vector search
 
 ## Features
 
@@ -27,7 +27,7 @@ GoodReads-Mini is a comprehensive book management and social platform that allow
 
 ### Social Media Posting Module
 
-- Create, Read, and Delete social media posts
+- Upload Book post on facebook & Instagram and managemnt post of both social media platform from one place
 - Filter posts based on platform
 - Sorting options available
 
@@ -118,7 +118,6 @@ Ensure you have the following installed:
 ## API Documentation
 
 For detailed API endpoints and request/response structures, refer to the following API documentation.
-
-`https://documenter.getpostman.com/view/27919522/2sAYk7QiZN`
+https://documenter.getpostman.com/view/27919522/2sAYk7QiZN
 
 Hope you like the project 🤞🏻
