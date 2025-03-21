@@ -6,11 +6,11 @@ export const getEmbedding = async (ctx, searchQuery) => {
     ctx,
     "post",
     openAI_embedding_url,
+    null, //  No query parameters needed
     {
       input: searchQuery,
       model: "text-embedding-3-small",
     },
-    null, //  No query parameters needed
     {
       //set headers
       Authorization: `Bearer ${openAI_key}`,
