@@ -6,13 +6,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --env-file=.env server.js"
+    "start": "nodemon server.js"
   },
   "author": "Aditya Parmar",
   "license": "ISC",
   "dependencies": {
     "@google/generative-ai": "^0.24.0",
-    "@huggingface/inference": "^3.5.2",
     "axios": "^1.7.9",
     "bcryptjs": "^3.0.2",
     "bluebird": "^3.7.2",
