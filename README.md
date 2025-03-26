@@ -117,7 +117,9 @@ Ensure you have the following installed:
 
 ## Docker image
 
-`docker pull adijparmar119/goodreads-mini-backend:v2`
+```sh
+docker pull adijparmar119/goodreads-mini-backend:v2
+```
 
 ## API Documentation
 
