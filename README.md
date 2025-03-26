@@ -91,10 +91,10 @@ GoodReads-Mini is a comprehensive book readers system & social platform that all
 
 Ensure you have the following installed:
 
-- Node.js 
+- Node.js
 - KoaJS
 - MongoDB
- 
+
 ### Setup
 
 1. Clone the repository:
@@ -114,6 +114,10 @@ Ensure you have the following installed:
    ```sh
    npm run start
    ```
+
+## Docker image
+
+`docker pull adijparmar119/goodreads-mini-backend:v2`
 
 ## API Documentation
 
