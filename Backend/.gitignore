@@ -2,3 +2,5 @@
 /.env
 /.env.test
 /lambda-functions/*/node_modules
+/validate-microservices.js
+/test-backward-compatibility.js
