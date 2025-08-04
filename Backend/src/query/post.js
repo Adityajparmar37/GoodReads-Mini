@@ -17,3 +17,47 @@ export const findPosts = (filter, sortOrder) =>
     .find(filter)
     .sort({ createdAt: sortOrder })
     .toArray();
+
+// New functions for job tracking
+export const insertPostJob = (job) =>
+  client.db(DATABASE).collection(posts).insertOne(job);
+
+export const updatePostJobStatus = (jobId, status, errorMessage = null) =>
+  client.db(DATABASE).collection(posts).updateOne(
+    { jobId },
+    {
+      $set: {
+        jobStatus: status,
+        updatedAt: new Date(),
+        ...(errorMessage && { errorMessage }),
+        ...(status === 'completed' && { completedAt: new Date() }),
+      },
+      $inc: { retryCount: status === 'failed' ? 1 : 0 },
+    }
+  );
+
+export const findPostJobById = (jobId) =>
+  client.db(DATABASE).collection(posts).findOne({ jobId });
+
+export const findPendingJobs = () =>
+  client.db(DATABASE).collection(posts).find({ jobStatus: 'pending' }).toArray();
+
+export const findJobsForRetry = (maxRetryCount) =>
+  client.db(DATABASE).collection(posts).find({
+    jobStatus: 'failed',
+    retryCount: { $lt: maxRetryCount }
+  }).toArray();
+
+export const updatePostWithJobResult = (jobId, postId, platform) =>
+  client.db(DATABASE).collection(posts).updateOne(
+    { jobId },
+    {
+      $set: {
+        postId,
+        platform,
+        jobStatus: 'completed',
+        completedAt: new Date(),
+        updatedAt: new Date(),
+      }
+    }
+  );

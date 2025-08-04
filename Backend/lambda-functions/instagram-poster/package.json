@@ -1,0 +1,11 @@
+{
+  "name": "instagram-poster-lambda",
+  "version": "1.0.0",
+  "description": "AWS Lambda function for Instagram posting",
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "@aws-sdk/client-sqs": "^3.705.0",
+    "axios": "^1.7.9"
+  }
+}

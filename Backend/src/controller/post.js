@@ -14,6 +14,10 @@ import {
   platformActionsToDeletePost,
 } from "../utils/mapping.js";
 import { timestamp } from "../utils/timestamp.js";
+import { createPostJobs } from "../services/postServices.js";
+
+// Environment variable to control async vs sync posting
+const USE_ASYNC_POSTING = process.env.USE_ASYNC_POSTING === 'true';
 
 // @route   POST/api/v1/posts/
 // @desc    publish post on specified social Media
@@ -28,6 +32,67 @@ export const postBook = handleAsync(async (ctx) => {
     url: bookDetails.coverImage,
   };
 
+  // Check if async posting is enabled
+  if (USE_ASYNC_POSTING) {
+    // Use new async microservices architecture
+    return await handleAsyncPosting(ctx, platforms, userId, bookId, postData, bookDetails);
+  } else {
+    // Use existing synchronous approach for backward compatibility
+    return await handleSyncPosting(ctx, platforms, userId, bookId, postData, bookDetails);
+  }
+});
+
+/**
+ * Handles asynchronous posting using microservices
+ */
+const handleAsyncPosting = async (ctx, platforms, userId, bookId, postData, bookDetails) => {
+  try {
+    // Create jobs for each platform
+    const jobsData = platforms.map(platform => ({
+      userId,
+      bookId: bookDetails.bookId,
+      platform,
+      postData,
+    }));
+
+    const result = await createPostJobs(jobsData);
+
+    if (result.success && result.successfulJobs > 0) {
+      sendResponse(ctx, 202, { // 202 Accepted for async processing
+        response: {
+          success: true,
+          message: "Posts are being processed asynchronously",
+          jobIds: result.jobIds,
+          totalJobs: result.totalJobs,
+          successfulJobs: result.successfulJobs,
+          failedJobs: result.failedJobs,
+        },
+      });
+    } else {
+      sendResponse(ctx, 400, {
+        response: {
+          success: false,
+          message: "Failed to create post jobs",
+          errors: result.errors,
+        },
+      });
+    }
+  } catch (error) {
+    console.error('Async posting error:', error);
+    sendResponse(ctx, 500, {
+      response: {
+        success: false,
+        message: "Internal server error during async posting",
+        error: error.message,
+      },
+    });
+  }
+};
+
+/**
+ * Handles synchronous posting (original implementation)
+ */
+const handleSyncPosting = async (ctx, platforms, userId, bookId, postData, bookDetails) => {
   // run platform service by mapping its object
   const postResults = await Bluebird.mapSeries(platforms, async (platform) =>
     platformActionsToCreatePost[platform](ctx, postData)
@@ -45,6 +110,7 @@ export const postBook = handleAsync(async (ctx) => {
         message: "Not posted, please try again",
       },
     });
+    return;
   }
 
   const result = await Bluebird.map(
@@ -73,7 +139,7 @@ export const postBook = handleAsync(async (ctx) => {
           failedMessage,
         },
       });
-});
+};
 
 // @route   GET/api/v1/posts/
 // @desc    delete post on specified social Media
