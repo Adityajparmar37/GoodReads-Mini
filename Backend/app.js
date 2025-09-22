@@ -4,6 +4,7 @@ import router from "./src/routes/index.js";
 import errorHandler from "./src/middleware/errorHandler.js";
 import { Server } from "socket.io";
 import { createServer } from "http";
+import { sendMessage } from "./src/services/awsSQSServices.js";
 
 const app = new Koa();
 
@@ -40,5 +41,7 @@ app.use(async (ctx, next) => {
 });
 
 app.use(router.routes()).use(router.allowedMethods());
+
+sendMessage("Hello from Koa app");
 
 export { server, io };

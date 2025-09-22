@@ -1,7 +1,6 @@
 import { MongoClient } from "mongodb";
 
 const mongoUrl = process.env.MONGO_URL;
-console.log(mongoUrl);
 export const client = new MongoClient(mongoUrl);
 
 export const connectDb = async () => {
