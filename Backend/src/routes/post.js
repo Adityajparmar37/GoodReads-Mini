@@ -1,5 +1,6 @@
 import Router from "koa-router";
-import { postBook, deleteBookPost, getPosts } from "../controller/index.js";
+import { deleteBookPost, getPosts } from "../controller/index.js";
+import { queuePost } from "../controller/queuedPost.js";
 import { auth } from "../middleware/auth.js";
 import { validator } from "../middleware/validator.js";
 import { isBookValid, validateBookId } from "../validator/book.js";
@@ -13,6 +14,7 @@ import {
 
 const route = new Router({ prefix: "/post" });
 
+// Queue post for async processing via SQS and Lambda
 route.post(
   "/:bookId",
   auth,
@@ -22,7 +24,7 @@ route.post(
     isBookValid,
     validateSocialMediaPlatform,
   ]),
-  postBook
+  queuePost
 );
 
 route.get(

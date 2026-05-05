@@ -6,7 +6,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "dev": "nodemon --env-file=.env server.js",
+    "test:cron": "node --env-file=.env src/utils/testCron.js",
+    "test:setup": "node --env-file=.env src/utils/testSetup.js"
   },
   "author": "Aditya Parmar",
   "license": "ISC",

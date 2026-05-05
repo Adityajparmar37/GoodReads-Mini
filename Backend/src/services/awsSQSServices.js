@@ -14,12 +14,23 @@ const sqs = new SQSClient({
 });
 
 const QUEUE_URL = process.env.AWS_SQS_QUEUE_URL;
+const FACEBOOK_QUEUE_URL = process.env.AWS_SQS_FACEBOOK_QUEUE_URL || QUEUE_URL;
+const INSTAGRAM_QUEUE_URL = process.env.AWS_SQS_INSTAGRAM_QUEUE_URL || QUEUE_URL;
 
 // send message to SQS queue
-export const sendMessage = async (messageBody) => {
+export const sendMessage = async (messageBody, platform = null) => {
   console.log("inside sendMessage");
+  
+  // Use platform-specific queue if available
+  let queueUrl = QUEUE_URL;
+  if (platform === 1 && FACEBOOK_QUEUE_URL !== QUEUE_URL) {
+    queueUrl = FACEBOOK_QUEUE_URL;
+  } else if (platform === 2 && INSTAGRAM_QUEUE_URL !== QUEUE_URL) {
+    queueUrl = INSTAGRAM_QUEUE_URL;
+  }
+  
   const command = new SendMessageCommand({
-    QueueUrl: QUEUE_URL,
+    QueueUrl: queueUrl,
     MessageBody: JSON.stringify(messageBody),
   });
 

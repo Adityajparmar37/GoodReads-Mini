@@ -30,6 +30,13 @@ GoodReads-Mini is a comprehensive book readers system & social platform that all
 - Upload Book post on facebook & Instagram and managemnt post of both social media platform from one place
 - Filter posts based on platform
 - Sorting options available
+- **NEW: Queue-based asynchronous posting system**
+  - Queue posts for later processing
+  - Automatic cron job picks pending posts every 5 minutes
+  - AWS SQS integration for reliable message delivery
+  - Separate Lambda functions for Facebook and Instagram
+  - Real-time status tracking (pending, processing, completed, failed)
+  - See [QUICK_START_GUIDE.md](Backend/QUICK_START_GUIDE.md) for setup instructions
 
 ### Shelves Module
 
