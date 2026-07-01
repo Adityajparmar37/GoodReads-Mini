@@ -1,0 +1,54 @@
+services:
+
+  # Public entry point — nginx handles reverse proxy, load balancing, firewall
+  - type: web
+    name: goodreads-nginx
+    runtime: docker
+    dockerfilePath: ./nginx/Dockerfile
+    dockerContext: ./nginx
+
+  # Backend — private, only reachable by nginx internally
+  - type: pserv
+    name: goodreads-backend
+    runtime: docker
+    dockerfilePath: ./Backend/dockerfile
+    dockerContext: ./Backend
+    envVars:
+      - key: PORT
+        value: "5000"
+      - key: MONGO_URL
+        sync: false
+      - key: DATABASE
+        sync: false
+      - key: SECRET_JWT_KEY
+        sync: false
+      - key: ENCRYPTION_ALGORITHM
+        sync: false
+      - key: ENCRYPT_KEY
+        sync: false
+      - key: EMAIL
+        sync: false
+      - key: MAILPASS
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: FACEBOOK_BASE_URL
+        sync: false
+      - key: FACEBOOK_PAGE_ACCESS_TOKEN
+        sync: false
+      - key: FACEBOOK_PAGE_ID
+        sync: false
+      - key: INSTAGRAM_BASE_URL
+        sync: false
+      - key: INSTAGRAM_ID
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: AWS_REGION
+        sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_SQS_QUEUE_URL
+        sync: false
