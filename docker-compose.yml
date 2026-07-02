@@ -1,0 +1,17 @@
+services:
+  goodreads-backend:
+    build:
+      context: ./Backend
+      dockerfile: dockerfile
+    env_file:
+      - ./Backend/.env
+    expose:
+      - "5000"
+
+  nginx:
+    build:
+      context: ./Backend/nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - goodreads-backend

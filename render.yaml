@@ -4,8 +4,9 @@ services:
   - type: web
     name: goodreads-nginx
     runtime: docker
-    dockerfilePath: ./nginx/Dockerfile
-    dockerContext: ./nginx
+    dockerfilePath: ./Backend/nginx/Dockerfile
+    dockerContext: ./Backend/nginx
+    healthCheckPath: /health
 
   # Backend — private, only reachable by nginx internally
   - type: pserv
