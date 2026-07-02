@@ -8,9 +8,9 @@ connectDb()
       //print error in slack
       if (err) console.error("App error ", err);
       console.log(`App listen on ${PORT}`);
-      
+
       // Start cron job for processing queued posts
-      setupCronJob();
+      // setupCronJob();
     });
   })
   //print error in slack

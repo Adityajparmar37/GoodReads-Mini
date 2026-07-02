@@ -4,7 +4,7 @@ import router from "./src/routes/index.js";
 import errorHandler from "./src/middleware/errorHandler.js";
 import { Server } from "socket.io";
 import { createServer } from "http";
-import { sendMessage } from "./src/services/awsSQSServices.js";
+// import { sendMessage } from "./src/services/awsSQSServices.js";
 
 const app = new Koa();
 
@@ -26,7 +26,7 @@ app.use(
       err.message = "Please provide a valid JSON body";
       throw err;
     },
-  })
+  }),
 );
 
 // logger
@@ -36,12 +36,12 @@ app.use(async (ctx, next) => {
   console.log(
     `${new Date().toLocaleString()} - ${ctx.request.origin} - ${ctx.method} ${
       ctx.url
-    } - ${ctx.status}`
+    } - ${ctx.status}`,
   );
 });
 
 app.use(router.routes()).use(router.allowedMethods());
 
-sendMessage("Hello from Koa app");
+// sendMessage("Hello from Koa app");
 
 export { server, io };
