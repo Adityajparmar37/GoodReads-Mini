@@ -1,19 +1,42 @@
 services:
   goodreads-backend:
+    image: adijparmar119/goodreads-mini-backend:v3.0
     build:
       context: ./Backend
       dockerfile: dockerfile
     env_file:
       - ./Backend/.env
     environment:
-      - PORT=5000
+      - PORT=3000
+      - APP_NAME=goodreads-backend
     volumes:
       - ./Backend:/app
       - /app/node_modules
     expose:
-      - "5000"
+      - "3000"
+    ports:
+      - "3000:3000"
+
+  goodreads-backend-2:
+    image: adijparmar119/goodreads-mini-backend:v3.0
+    build:
+      context: ./Backend
+      dockerfile: dockerfile
+    env_file:
+      - ./Backend/.env
+    environment:
+      - PORT=5050
+      - APP_NAME=goodreads-backend-2
+    volumes:
+      - ./Backend:/app
+      - /app/node_modules
+    expose:
+      - "5050"
+    ports:
+      - "5050:5050"
 
   nginx:
+    image: adijparmar119/goodreads-mini-nginx:v3.0
     build:
       context: ./Backend/nginx
     volumes:

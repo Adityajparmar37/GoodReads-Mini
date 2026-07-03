@@ -8,6 +8,7 @@ import followRoute from "../routes/follow.js";
 import friendRoute from "../routes/friend.js";
 import groupRoute from "../routes/group.js";
 import chatRoute from "../routes/chat.js";
+import health from "../routes/health.js";
 import reviewCommentsLikesRoute from "../routes/reviewCommentsLikes.js";
 import nestedCommentsLikesRoute from "../routes/nestedCommentsLikes.js";
 
@@ -25,6 +26,7 @@ const ROUTERS = [
   chatRoute,
   reviewCommentsLikesRoute,
   nestedCommentsLikesRoute,
+  health,
 ];
 
 ROUTERS.forEach((route) => {
